@@ -1,0 +1,690 @@
+[
+  {
+    "assetName": "Alliance Resource Partners LP",
+    "ticker": "ARLP"
+  },
+  {
+    "assetName": "AllianceBernstein Holding L.P.",
+    "ticker": "AB"
+  },
+  {
+    "assetName": "Belpointe PREP, LLC",
+    "ticker": "OZ"
+  },
+  {
+    "assetName": "Bitwise 10 Crypto Index Fund",
+    "ticker": "BITW"
+  },
+  {
+    "assetName": "Black Stone Minerals, L.P. (Common Units)",
+    "ticker": "BSM"
+  },
+  {
+    "assetName": "BP Midstream Partners LP",
+    "ticker": ""
+  },
+  {
+    "assetName": "Brookfield Business Partners, L.P.",
+    "ticker": "BBU-UN.TO"
+  },
+  {
+    "assetName": "Brookfield Infrastructure Partners, L.P.",
+    "ticker": "BIP"
+  },
+  {
+    "assetName": "Brookfield Infrastructure Partners, L.P. Series 13 Preferred",
+    "ticker": "BIP"
+  },
+  {
+    "assetName": "Brookfield Infrastructure Partners, L.P. Series 14 Preferred",
+    "ticker": "BIP"
+  },
+  {
+    "assetName": "Brookfield Property Partners, L.P.",
+    "ticker": "BPYPP"
+  },
+  {
+    "assetName": "Brookfield Property Partners, L.P. - Series 1 Preferred",
+    "ticker": "BPYPP"
+  },
+  {
+    "assetName": "Brookfield Property Partners, L.P. - Series 2 Preferred",
+    "ticker": "BPYPP"
+  },
+  {
+    "assetName": "Brookfield Property Partners, L.P. - Series 3 Preferred",
+    "ticker": "BPYPP"
+  },
+  {
+    "assetName": "Brookfield Property Preferred, L.P.",
+    "ticker": "BPYPM"
+  },
+  {
+    "assetName": "Brookfield Renewable Partners, L.P.",
+    "ticker": "BEP"
+  },
+  {
+    "assetName": "Brookfield Renewable Partners, L.P. Series 17 Preferred",
+    "ticker": "BEP"
+  },
+  {
+    "assetName": "Calumet Specialty Products Partners, L.P.",
+    "ticker": "CLMT"
+  },
+  {
+    "assetName": "Cedar Fair LP",
+    "ticker": "FUN"
+  },
+  {
+    "assetName": "Cheniere Energy Partners, LP",
+    "ticker": "CQP"
+  },
+  {
+    "assetName": "Chesapeake Granite Wash Trust",
+    "ticker": "CHKR"
+  },
+  {
+    "assetName": "COFINA Class 2 Trust, 2047 Units",
+    "ticker": ""
+  },
+  {
+    "assetName": "COFINA Class 2 Trust, 2054 Units",
+    "ticker": ""
+  },
+  {
+    "assetName": "Compass Diversified Holdings",
+    "ticker": "CODI"
+  },
+  {
+    "assetName": "Compass Diversified Holdings (7.25% Series A Preferred)",
+    "ticker": ""
+  },
+  {
+    "assetName": "Compass Diversified Holdings (7.875% Series B Preferred)",
+    "ticker": ""
+  },
+  {
+    "assetName": "Compass Diversified Holdings (7.875% Series C Preferred)",
+    "ticker": ""
+  },
+  {
+    "assetName": "ConvexityShares 1.5x SPIKES Futures ETF",
+    "ticker": ""
+  },
+  {
+    "assetName": "ConvexityShares 1x SPIKES Futures ETF",
+    "ticker": ""
+  },
+  {
+    "assetName": "Crestwood Equity Partners LP",
+    "ticker": ""
+  },
+  {
+    "assetName": "Crestwood Equity Partners LP (9.25% Preferred Units)",
+    "ticker": ""
+  },
+  {
+    "assetName": "CSI Compressco LP",
+    "ticker": ""
+  },
+  {
+    "assetName": "CVR Partners, LP",
+    "ticker": "UAN"
+  },
+  {
+    "assetName": "DCP Midstream, LP",
+    "ticker": "ET"
+  },
+  {
+    "assetName": "DCP Midstream, LP - Series A Preferred Units"
+  },
+  {
+    "assetName": "DCP Midstream, LP - Series B Preferred Units"
+  },
+  {
+    "assetName": "DCP Midstream, LP - Series C Preferred Units"
+  },
+  {
+    "assetName": "Delek Logistics Partners, LP",
+    "ticker": "DKL"
+  },
+  {
+    "assetName": "Dorchester Minerals, L.P.",
+    "ticker": "DMLP"
+  },
+  {
+    "assetName": "Dynamic Short Short-Term Volatility Futures ETF",
+    "ticker": "WEIX"
+  },
+  {
+    "assetName": "ECA Marcellus Trust I",
+    "ticker": "ECTM"
+  },
+  {
+    "assetName": "Empire State Realty OP, L.P. Private Preferred (2014)",
+    "ticker": "ESBA"
+  },
+  {
+    "assetName": "Empire State Realty OP, L.P. Private Preferred (2019)",
+    "ticker": "ESBA"
+  },
+  {
+    "assetName": "Empire State Realty OP, L.P. Series 60",
+    "ticker": "ESBA"
+  },
+  {
+    "assetName": "Empire State Realty OP, L.P. Series 250",
+    "ticker": "ESBA"
+  },
+  {
+    "assetName": "Empire State Realty OP, L.P. Series ES",
+    "ticker": "ESBA"
+  },
+  {
+    "assetName": "Empire State Realty OP, L.P. Series PR",
+    "ticker": "ESBA"
+  },
+  {
+    "assetName": "Enable Midstream Partners, LP",
+    "ticker": "ET"
+  },
+  {
+    "assetName": "Energy 11, L.P.",
+    "ticker": "EPD"
+  },
+  {
+    "assetName": "Energy Resources 12, L.P.",
+    "ticker": "EPD"
+  },
+  {
+    "assetName": "Energy Transfer LP",
+    "ticker": "ET"
+  },
+  {
+    "assetName": "Energy Transfer LP Series A",
+    "ticker": ""
+  },
+  {
+    "assetName": "Energy Transfer LP Series B",
+    "ticker": ""
+  },
+  {
+    "assetName": "Energy Transfer LP Series C",
+    "ticker": ""
+  },
+  {
+    "assetName": "Energy Transfer LP Series D",
+    "ticker": ""
+  },
+  {
+    "assetName": "Energy Transfer LP Series E",
+    "ticker": ""
+  },
+  {
+    "assetName": "Energy Transfer LP Series F",
+    "ticker": ""
+  },
+  {
+    "assetName": "Energy Transfer LP Series G",
+    "ticker": ""
+  },
+  {
+    "assetName": "Energy Transfer LP Series H",
+    "ticker": ""
+  },
+  {
+    "assetName": "Energy Transfer LP Series I",
+    "ticker": ""
+  },
+  {
+    "assetName": "Energy Transfer Operating LP Series A",
+    "ticker": ""
+  },
+  {
+    "assetName": "Energy Transfer Operating LP Series B",
+    "ticker": ""
+  },
+  {
+    "assetName": "Energy Transfer Operating LP Series C",
+    "ticker": ""
+  },
+  {
+    "assetName": "Energy Transfer Operating LP Series D",
+    "ticker": ""
+  },
+  {
+    "assetName": "Energy Transfer Operating LP Series E",
+    "ticker": ""
+  },
+  {
+    "assetName": "Energy Transfer Operating LP Series F",
+    "ticker": ""
+  },
+  {
+    "assetName": "Energy Transfer Operating LP Series G",
+    "ticker": ""
+  },
+  {
+    "assetName": "EnLink Midstream Partners, LP (Series C Preferred)",
+    "ticker": ""
+  },
+  {
+    "assetName": "Enterprise Products Partners L.P.",
+    "ticker": "EPD"
+  },
+  {
+    "assetName": "Evolve Transition Infrastructure LP",
+    "ticker": ""
+  },
+  {
+    "assetName": "Ferrellgas Partners, L.P.",
+    "ticker": "FGPR"
+  },
+  {
+    "assetName": "Ferrellgas Partners, LP - Class B Units",
+    "ticker": "FGPR"
+  },
+  {
+    "assetName": "Fortress Transportation & Infrastructure Investors",
+    "ticker": ""
+  },
+  {
+    "assetName": "Fortress Transportation & Infrastructure Investors Series A",
+    "ticker": ""
+  },
+  {
+    "assetName": "Fortress Transportation & Infrastructure Investors Series B",
+    "ticker": ""
+  },
+  {
+    "assetName": "Fortress Transportation & Infrastructure Investors Series C",
+    "ticker": ""
+  },
+  {
+    "assetName": "Genesis Energy LP",
+    "ticker": "GEL"
+  },
+  {
+    "assetName": "Global Indemnity Group LLC",
+    "ticker": "GBLI"
+  },
+  {
+    "assetName": "Global Partners",
+    "ticker": "GLP"
+  },
+  {
+    "assetName": "Global Partners LP Series A Preferred",
+    "ticker": ""
+  },
+  {
+    "assetName": "Global Partners LP Series B Preferred",
+    "ticker": ""
+  },
+  {
+    "assetName": "Green Plains Partners LP",
+    "ticker": "GPRE"
+  },
+  {
+    "assetName": "Greystone Housing Impact Investors LP (fka America First)",
+    "ticker": "GHI"
+  },
+  {
+    "assetName": "Hashdex Bitcoin Futures ETF",
+    "ticker": "DEFI"
+  },
+  {
+    "assetName": "Hawaiian Macadamia Nut Orchards LP (fka Royal Hawaiian Orchards LP)",
+    "ticker": ""
+  },
+  {
+    "assetName": "Holly Energy Partners, L.P.",
+    "ticker": "EPD"
+  },
+  {
+    "assetName": "Icahn Enterprises L.P.",
+    "ticker": "IEP"
+  },
+  {
+    "assetName": "Invesco DB Agriculture Fund",
+    "ticker": "DBA"
+  },
+  {
+    "assetName": "Invesco DB Base Metals Fund",
+    "ticker": "DBB"
+  },
+  {
+    "assetName": "Invesco DB Commodity Index Tracking Fund",
+    "ticker": "DBC"
+  },
+  {
+    "assetName": "Invesco DB Energy Fund",
+    "ticker": "DBE"
+  },
+  {
+    "assetName": "Invesco DB G10 Currency Harvest Fund",
+    "ticker": "DBV"
+  },
+  {
+    "assetName": "Invesco DB Gold Fund",
+    "ticker": "DGL"
+  },
+  {
+    "assetName": "Invesco DB Oil Fund",
+    "ticker": "DBO"
+  },
+  {
+    "assetName": "Invesco DB Precious Metals Fund",
+    "ticker": "^DBP-NV"
+  },
+  {
+    "assetName": "Invesco DB Silver Fund",
+    "ticker": ""
+  },
+  {
+    "assetName": "Invesco DB US Dollar Index Bearish Fund",
+    "ticker": "UDN"
+  },
+  {
+    "assetName": "Invesco DB US Dollar Index Bullish Fund",
+    "ticker": "UUP"
+  },
+  {
+    "assetName": "iShares S&P GSCI Commodity-Indexed Trust",
+    "ticker": "GSG"
+  },
+  {
+    "assetName": "Lazard Ltd",
+    "ticker": ""
+  },
+  {
+    "assetName": "Mach Natural Resources LP",
+    "ticker": "MNR"
+  },
+  {
+    "assetName": "Macquarie Infrastructure Holdings, LLC",
+    "ticker": "VRT"
+  },
+  {
+    "assetName": "Magellan Midstream Partners, L.P.",
+    "ticker": "EPD"
+  },
+  {
+    "assetName": "Martin Midstream Partners L.P.",
+    "ticker": "MMLP"
+  },
+  {
+    "assetName": "MDB Capital Holdings, LLC",
+    "ticker": "MDBH"
+  },
+  {
+    "assetName": "MPLX LP",
+    "ticker": "MPLX"
+  },
+  {
+    "assetName": "MPLX LP Series B Preferred",
+    "ticker": ""
+  },
+  {
+    "assetName": "MYT Holding LLC",
+    "ticker": ""
+  },
+  {
+    "assetName": "MYT Holding LLC Preferred Units",
+    "ticker": ""
+  },
+  {
+    "assetName": "Natural Resource Partners L.P.",
+    "ticker": "NRP"
+  },
+  {
+    "assetName": "New York REIT Liquidating LLC",
+    "ticker": ""
+  },
+  {
+    "assetName": "NGL Energy Partners L.P.",
+    "ticker": ""
+  },
+  {
+    "assetName": "NGL Energy Partners L.P. - Class B Preferred",
+    "ticker": ""
+  },
+  {
+    "assetName": "NGL Energy Partners LP - Class C Preferred",
+    "ticker": ""
+  },
+  {
+    "assetName": "NuStar Energy, LP (NS)",
+    "ticker": "NS"
+  },
+  {
+    "assetName": "NuStar Energy, LP Series A Preferred Units",
+    "ticker": "NS"
+  },
+  {
+    "assetName": "NuStar Energy, LP Series B Preferred Units",
+    "ticker": "NS"
+  },
+  {
+    "assetName": "NuStar Energy, LP Series C Preferred Units",
+    "ticker": "NS"
+  },
+  {
+    "assetName": "Oaktree Capital Group, LLC Series A Preferred Units",
+    "ticker": "OAK-PB"
+  },
+  {
+    "assetName": "Oaktree Capital Group, LLC Series B Preferred Units",
+    "ticker": "OAK-PB"
+  },
+  {
+    "assetName": "Oasis Midstream Partners LP"
+  },
+  {
+    "assetName": "Plains All American Pipeline, L.P.",
+    "ticker": "PAA"
+  },
+  {
+    "assetName": "Plains All American Pipeline, L.P. Series B",
+    "ticker": "PAA"
+  },
+  {
+    "assetName": "Volatility Shares -1x Short VIX Futures ETF",
+    "ticker": "SVIX"
+  },
+  {
+    "assetName": "ProShares Short Euro (EUFX)",
+    "ticker": "EUFX"
+  },
+  {
+    "assetName": "ProShares Short VIX Short-Term Futures ETF (SVXY)",
+    "ticker": "SVXY"
+  },
+  {
+    "assetName": "ProShares Ultra Bloomberg Crude Oil (UCO)",
+    "ticker": "UCO"
+  },
+  {
+    "assetName": "ProShares Ultra Bloomberg Natural Gas (BOIL)",
+    "ticker": "BOIL"
+  },
+  {
+    "assetName": "ProShares Ultra Euro (ULE)",
+    "ticker": "ULE"
+  },
+  {
+    "assetName": "ProShares Ultra Gold (UGL)",
+    "ticker": "UGL"
+  },
+  {
+    "assetName": "ProShares Ultra Silver (AGQ)",
+    "ticker": "AGQ"
+  },
+  {
+    "assetName": "ProShares Ultra VIX Short-Term Futures ETF (UVXY)",
+    "ticker": "UVXY"
+  },
+  {
+    "assetName": "ProShares Ultra Yen (YCL)",
+    "ticker": "YCL"
+  },
+  {
+    "assetName": "ProShares UltraShort Australian Dollar (CROC)",
+    "ticker": "CROC"
+  },
+  {
+    "assetName": "ProShares UltraShort Bloomberg Crude Oil (SCO)",
+    "ticker": "SCO"
+  },
+  {
+    "assetName": "ProShares UltraShort Bloomberg Natural Gas (KOLD)",
+    "ticker": "KOLD"
+  },
+  {
+    "assetName": "ProShares UltraShort Euro (EUO)",
+    "ticker": "EUO"
+  },
+  {
+    "assetName": "ProShares UltraShort Gold (GLL)",
+    "ticker": "GLL"
+  },
+  {
+    "assetName": "ProShares UltraShort Silver (ZSL)",
+    "ticker": "ZSL"
+  },
+  {
+    "assetName": "ProShares UltraShort Yen (YCS)",
+    "ticker": "YCS"
+  },
+  {
+    "assetName": "ProShares VIX Mid-Term Futures ETF (VIXM)",
+    "ticker": "VIXM"
+  },
+  {
+    "assetName": "ProShares VIX Short-Term Futures ETF (VIXY)",
+    "ticker": "VIXY"
+  },
+  {
+    "assetName": "Restaurant Brands International LP",
+    "ticker": ""
+  },
+  {
+    "assetName": "Riverstone Energy Limited",
+    "ticker": "RSE.L"
+  },
+  {
+    "assetName": "SandRidge Mississippian Trust I",
+    "ticker": "SDTTU"
+  },
+  {
+    "assetName": "SandRidge Mississippian Trust II",
+    "ticker": ""
+  },
+  {
+    "assetName": "SandRidge Permian Trust",
+    "ticker": ""
+  },
+  {
+    "assetName": "Suburban Propane Partners, L.P.",
+    "ticker": "SPH"
+  },
+  {
+    "assetName": "Sunoco LP",
+    "ticker": "SUN"
+  },
+  {
+    "assetName": "TC PipeLines, LP",
+    "ticker": "ET"
+  },
+  {
+    "assetName": "Teucrium Agricultural Fund",
+    "ticker": "^TTAGS"
+  },
+  {
+    "assetName": "Teucrium Corn Fund",
+    "ticker": "CORN"
+  },
+  {
+    "assetName": "Teucrium Soybean Fund",
+    "ticker": "SOYB"
+  },
+  {
+    "assetName": "Teucrium Sugar Fund",
+    "ticker": "^CANE-NV"
+  },
+  {
+    "assetName": "Teucrium Wheat Fund",
+    "ticker": "WEAT"
+  },
+  {
+    "assetName": "TXO Partners, L.P.",
+    "ticker": "TXO"
+  },
+  {
+    "assetName": "United States 12 Month Natural Gas Fund, LP (UNL)",
+    "ticker": "UNL"
+  },
+  {
+    "assetName": "United States 12 Month Oil Fund, LP (USL)",
+    "ticker": "USL"
+  },
+  {
+    "assetName": "United States Brent Oil Fund, LP (BNO)",
+    "ticker": "BNO"
+  },
+  {
+    "assetName": "United States Commodity Index Fund (USCI)",
+    "ticker": "USCI"
+  },
+  {
+    "assetName": "United States Copper Index Fund (CPER)",
+    "ticker": "CPER"
+  },
+  {
+    "assetName": "United States Gasoline Fund, LP (UGA)",
+    "ticker": "UGA"
+  },
+  {
+    "assetName": "United States Natural Gas Fund, LP (UNG)",
+    "ticker": "UNG"
+  },
+  {
+    "assetName": "United States Oil Fund, LP (USO)",
+    "ticker": "USO"
+  },
+  {
+    "assetName": "US Equity Cumulative Dividends Fund Series 2027",
+    "ticker": ""
+  },
+  {
+    "assetName": "US Equity Ex Dividend Fund Series 2027",
+    "ticker": ""
+  },
+  {
+    "assetName": "USA Compression Partners, LP",
+    "ticker": "USAC"
+  },
+  {
+    "assetName": "USD Partners LP",
+    "ticker": "USDP"
+  },
+  {
+    "assetName": "Vantage Drilling International",
+    "ticker": "VTDRF"
+  },
+  {
+    "assetName": "Volatility Shares -1x Short VIX Futures ETF",
+    "ticker": "VIXY"
+  },
+  {
+    "assetName": "Volatility Shares 2x Long VIX Futures ETF",
+    "ticker": "UVIX"
+  },
+  {
+    "assetName": "Western Midstream Partners LP",
+    "ticker": "WES"
+  },
+  {
+    "assetName": "Westlake Chemical Partners, LP",
+    "ticker": "WLKP"
+  }
+]
