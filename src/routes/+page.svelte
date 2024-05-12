@@ -55,7 +55,7 @@
   }
 </script>
 <main class="bg-white min-h-screen flex flex-col items-center justify-center p-8">
-  <h1 class="text-4xl font-bold mb-8">Historical Ticker Replacer</h1>
+  <h1 class="text-4xl font-bold mb-8">Composer Backtest Enabler</h1>
   <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md mb-8 flex flex-col items-center justify-center">
     <div class="flex items-center mb-4">
       <input id="allowK1" type="checkbox" bind:checked={allowK1} class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2">
@@ -124,7 +124,7 @@
         <h2 class="text-xl font-bold mb-4">Replaced Ticker and Correlation</h2>
         {#each data.REPLACED_TICKERS as item}
           <div class="bg-gray-100 p-4 rounded-lg shadow-md mb-4">
-            <div class="flex justify-">
+            <div class="flex justify-between gap-3">
               <p class="text-md font-semibold">Original Ticker: {item.originalTicker}</p>
               <p class="text-md font-semibold">Replaced Ticker: {item.replacementTicker}</p>
             </div>
