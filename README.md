@@ -1,38 +1,19 @@
-# create-svelte
+# Ticker Replacer
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+The Ticker Replacer is a tool that processes composer code and replaces tickers with suitable historical tickers based on certain criteria. It utilizes the Alpaca API, Yahoo Finance, and web scraping techniques to fetch and validate ticker data.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Extracts tickers from composer code
+- Validates tickers using the Alpaca API
+- Fetches and caches ticker data from various sources
+- Finds suitable historical tickers based on inception date and correlation
+- Replaces tickers in composer code with historical tickers
+- Handles special cases such as K1 tickers and individual assets
+- Replaces stacked quotes in composer code for proper formatting
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Dependencies
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+- @alpacahq/alpaca-trade-api: Alpaca API client library
+- yahoo-finance2: Yahoo Finance API library
+- chowdown: Web scraping library

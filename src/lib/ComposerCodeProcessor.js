@@ -6,9 +6,6 @@ import chowdown from "chowdown";
 import { PAPER_API_KEY_ALPACA, SECRET_KEY_ALPACA } from '$env/static/private';
 
 class TickerReplacer {
-  validTickers(validTickers) {
-    throw new Error('Method not implemented.');
-  }
   /**
    * @param {string} composerCode - The composer code to process.
    * @param {boolean} allowK1 - Whether to allow K1 tickers (default: false).
@@ -549,80 +546,6 @@ class TickerReplacer {
   //   }
   // }
 }
-// const composerCode = `(defsymphony
-//   "Copy of Tweaked TQQQ For The Long Term V11 - Archive"
-//   {:rebalance-frequency :daily}
-//   (weight-equal
-//    [(if
-//      (>
-//       (current-price "SPY")
-//       (moving-average-price "SPY" {:window 200}))
-//      [(weight-equal
-//        [(if
-//          (> (rsi "TQQQ" {:window 10}) 79)
-//          [(asset "UVXY")]
-//          [(weight-equal
-//            [(if
-//              (> (rsi "SPY" {:window 10}) 80)
-//              [(asset "UVXY")]
-//              [(weight-equal
-//                [(if
-//                  (>
-//                   (current-price "QQQ")
-//                   (exponential-moving-average-price "QQQ" {:window 50}))
-//                  [(weight-equal
-//                    [(if
-//                      (> (max-drawdown "QQQ" {:window 5}) 6)
-//                      [(weight-equal [(asset "SQQQ")])]
-//                      [(weight-equal [(asset "TQQQ")])])])]
-//                  [(weight-equal [(asset "TQQQ")])])])])])])])]
-//      [(weight-equal
-//        [(if
-//          (< (rsi "TQQQ" {:window 10}) 31)
-//          [(weight-equal [(asset "TECL")])]
-//          [(weight-equal
-//            [(if
-//              (< (rsi "UPRO" {:window 10}) 29)
-//              [(weight-equal [(asset "UPRO")])]
-//              [(weight-equal
-//                [(if
-//                  (> (rsi "UVXY" {:window 10}) 74)
-//                  [(weight-equal
-//                    [(if
-//                      (> (rsi "UVXY" {:window 10}) 84)
-//                      [(weight-equal
-//                        [(filter
-//                          (rsi {:window 9})
-//                          (select-top 1)
-//                          [(asset "TLT") (asset "BSV")])])]
-//                      [(asset "UVXY")])])]
-//                  [(weight-equal
-//                    [(if
-//                      (>
-//                       (current-price "TQQQ")
-//                       (moving-average-price "TQQQ" {:window 20}))
-//                      [(weight-equal
-//                        [(if
-//                          (<
-//                           (current-price "TQQQ")
-//                           (moving-average-price "TQQQ" {:window 50}))
-//                          [(weight-equal
-//                            [(if
-//                              (< (rsi "PSQ" {:window 5}) 29)
-//                              [(asset "SQQQ")]
-//                              [(asset "TQQQ")])])]
-//                          [(weight-equal
-//                            [(if
-//                              (< (rsi "SQQQ" {:window 9}) 30)
-//                              [(asset "SQQQ")]
-//                              [(asset "TQQQ")])])])])]
-//                      [(weight-equal
-//                        [(filter
-//                          (rsi {:window 9})
-//                          (select-top 1)
-//                          [(asset "SQQQ")
-//                           (asset "BSV")])])])])])])])])])])])]))
-//  `;
 
 export default TickerReplacer;
 
