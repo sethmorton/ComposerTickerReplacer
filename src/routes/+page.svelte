@@ -124,9 +124,9 @@
         <h2 class="text-xl font-bold mb-4">Replaced Ticker and Correlation</h2>
         {#each data.REPLACED_TICKERS as item}
           <div class="bg-gray-100 p-4 rounded-lg shadow-md mb-4">
-            <div class="flex justify-between">
-              <p class="text-lg font-semibold">Original Ticker: {item.originalTicker}</p>
-              <p class="text-lg font-semibold">Replaced Ticker: {item.replacementTicker}</p>
+            <div class="flex justify-">
+              <p class="text-md font-semibold">Original Ticker: {item.originalTicker}</p>
+              <p class="text-md font-semibold">Replaced Ticker: {item.replacementTicker}</p>
             </div>
             <p class="text-gray-600 mt-2">Correlation (1Y): {item.correlation}</p>
           </div>

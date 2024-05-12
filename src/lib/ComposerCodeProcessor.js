@@ -479,7 +479,7 @@ class TickerReplacer {
       if (this.shouldReplaceStocks && this.replacementTicker !== "") {
         console.log("Replacing stocks for", this.replacementTicker);
 
-      if (this.cache_.get(historicalTicker).isIndividualAsset) {
+      if ((this.cache_.get(historicalTicker).isIndividualAsset) && (new Date(this.cache_.get(ticker).inceptionDate) < new Date(this.date_))) {
         await this.replaceTickerInComposerCode(
           this.composerCode_,
           ticker,
