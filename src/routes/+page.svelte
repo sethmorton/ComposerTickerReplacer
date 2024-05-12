@@ -55,7 +55,7 @@
   }
 </script>
 <main class="bg-white min-h-screen flex flex-col items-center justify-center p-8">
-  <h1 class="text-4xl font-bold mb-8">Composer Backtest Enabler</h1>
+  <h1 class="text-4xl font-bold mb-8">Composer Backtest Extencer</h1>
   <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md mb-8 flex flex-col items-center justify-center">
     <div class="flex items-center mb-4">
       <input id="allowK1" type="checkbox" bind:checked={allowK1} class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2">
