@@ -55,6 +55,7 @@
   }
 </script>
 <main class="bg-white min-h-screen flex flex-col items-center justify-center p-8">
+  
   <h1 class="text-4xl font-bold mb-8">Composer Backtest Extender</h1>
   
   <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md mb-8">
@@ -152,31 +153,32 @@
       <p>{error}</p>
     </div>
   {/if}
+  <footer class="bg-white rounded-lg shadow m-4 dark:bg-gray-800">
+    <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
+      <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
+        Seth M.
+      </span>
+      <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
+        <li>
+          <a href="https://github.com/sethmorton" target="_blank" rel="noopener noreferrer" class="hover:underline me-4 md:me-6">
+            <i class="fab fa-github"></i> GitHub
+          </a>
+        </li>
+        <li>
+          <a href="mailto:sethmorton05@gmail.com" class="hover:underline me-4 md:me-6">
+            <i class="far fa-envelope"></i> Email
+          </a>
+        </li>
+        <li>
+          <span class="hover:underline me-4 md:me-6">
+            <i class="fab fa-discord"></i> sethmorton
+          </span>
+        </li>
+      </ul>
+    </div>
+  </footer>
+  
 </main>
-<footer class="bg-white rounded-lg shadow m-4 dark:bg-gray-800">
-  <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
-    <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
-      Seth M.
-    </span>
-    <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
-      <li>
-        <a href="https://github.com/sethmorton" target="_blank" rel="noopener noreferrer" class="hover:underline me-4 md:me-6">
-          <i class="fab fa-github"></i> GitHub
-        </a>
-      </li>
-      <li>
-        <a href="mailto:sethmorton05@gmail.com" class="hover:underline me-4 md:me-6">
-          <i class="far fa-envelope"></i> Email
-        </a>
-      </li>
-      <li>
-        <span class="hover:underline me-4 md:me-6">
-          <i class="fab fa-discord"></i> sethmorton
-        </span>
-      </li>
-    </ul>
-  </div>
-</footer>
 
 
 
