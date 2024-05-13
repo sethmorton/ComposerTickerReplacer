@@ -81,7 +81,7 @@
     {/if}
     
     <div class="mb-6">
-      <label for="date" class="block text-sm font-medium text-gray-900 mb-1">Backtest to:</label>
+      <label for="date" class="block text-sm font-medium text-gray-900 mb-1">Extend Backtest to:</label>
       <DateInput --date-picker-highlight-border={'blue'} format={'yyyy-MM-dd'} --date-input-width={'100%'} bind:value={date} timePrecision={null} class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"/>
     </div>
   </div>
