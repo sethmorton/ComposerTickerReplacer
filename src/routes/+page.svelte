@@ -1,8 +1,8 @@
 <script>
   import { DateInput } from "date-picker-svelte";
   import { Jumper } from 'svelte-loading-spinners';
-
-  let date = new Date();
+  import GuidingScreenshot from '$lib/images/guiding_screenshot.png';
+   let date = new Date();
   let allowK1 = false;
   let inputtedComposerCode = "";
   let shouldReplaceStocks = false;
@@ -88,8 +88,11 @@
   </div>
   
   <div class="w-full max-w-md mb-6">
-    <label for="composerCode" class="block text-sm font-medium text-gray-900 mb-1">Insert Composer Code:</label>
-    <textarea id="composerCode" rows="6" class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-blue-500 focus:border-blue-500" bind:value={inputtedComposerCode} placeholder="Insert Composer Code here"></textarea>
+    <div class="flex items-center mb-4">
+      <label for="composerCode" class="block text-sm font-medium text-gray-900 mb-1 mr-4 ">Insert Composer Code:</label>
+      <img src={GuidingScreenshot} width="200" height="100" alt="guiding composer code">
+    </div>
+    <textarea id="composerCode" rows="6" class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-blue-500 focus:border-blue-500" bind:value={inputtedComposerCode} placeholder="Insert Clojure style Composer Code here, I.E. (defsymphony @parts UVXY parts of v4 Pops l 18 April 2012 | SHARED :rebalance-frequency :daily "></textarea>
   </div>
   
   <div class="flex items-center gap-4 mb-8">
