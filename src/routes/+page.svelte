@@ -1,48 +1,122 @@
 <script>
-  import { DateInput } from "date-picker-svelte";
+import { DateInput } from "date-picker-svelte";
   import { Jumper } from 'svelte-loading-spinners';
   import GuidingScreenshot from '$lib/images/guiding_screenshot.png';
-   let date = new Date();
+
+  /** @type {Date} */
+  let date = new Date();
+
+  /** @type {boolean} */
   let allowK1 = false;
+
+  /** @type {string} */
   let inputtedComposerCode = "";
+
+  /** @type {boolean} */
   let shouldReplaceStocks = false;
+
+  /** @type {string} */
   let replacementTicker = "";
-  $: console.log(inputtedComposerCode);
+
+  /** @type {boolean} */
   let isDataLoading = false;
+
+  /** @type {string | null} */
   let error = null;
-  /**
-   * @type {{ NEW_COMPOSER_CODE: string; INDIVIDUAL_TICKERS: string[]; REPLACED_TIKCERS : {}[] } | null}
-   */
-  let data = null;
+
+  /** @type {boolean} */
+  let manualApprove = false;
+
+  /** @type {{}[]} */
+  let potentialReplacements = [];
+
+  /** @type {{}[]} */
+  let selectedReplacements = [];
+
+/**
+ * @typedef {Object} ReplacedTicker
+ * @property {string} originalTicker - The original ticker symbol
+ * @property {string} replacementTicker - The replacement ticker symbol (e.g., 'QQQ')
+ * @property {boolean} isIndividualAsset - Indicates if the ticker represents an individual asset
+ * @property {boolean} approved - Indicates if the replacement has been approved
+ * @property {boolean} denied - Indicates if the replacement has been denied
+ * @property {number} correlation - The correlation between the original and replacement tickers
+ */
+
+/**
+ * @typedef {Object} ComposerData
+ * @property {string} NEW_COMPOSER_CODE - The new composer code
+ * @property {ReplacedTicker[]} REPLACED_TICKERS - An array of replaced tickers
+ */
+
+/** @type {ComposerData | null} */
+let data = null;
+
+  /** @type {boolean} */
   let copied = false;
-  async function handleSubmit() {
-  isDataLoading = true;
-  copied = false;
-  error = null; // Reset the error state
-  if (inputtedComposerCode === "") {
-    alert("Please input Composer Code");
-    isDataLoading = false;
-    return;
-  }
-  try {
-    const response = await fetch('/data', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ date, allowK1, inputtedComposerCode, shouldReplaceStocks, replacementTicker}),
-    });
-    if (!response.ok) {
-      throw new Error('Error fetching data');
-    }
-    data = await response.json();
-    console.log(data);
-  } catch (err) {
-    error = err.message; // Set the error message
-    console.error(err);
-  }
-  isDataLoading = false;
+
+  /** @type {boolean} */
+  let allReplacementsProcessed = false;
+
+  $: {
+  /**
+   * @param {ReplacedTicker} replacement - The replaced ticker object
+   * @returns {boolean} - Indicates if the replacement has been approved or denied
+   */
+  allReplacementsProcessed = potentialReplacements.every(
+    (replacement) => replacement.approved !== undefined
+  );
 }
+
+  async function fetchPotentialReplacements() {
+    isDataLoading = true;
+    error = null;
+    try {
+      const response = await fetch('/potential-replacements', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ date, allowK1, inputtedComposerCode, shouldReplaceStocks, replacementTicker }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error fetching potential replacements');
+      }
+
+      const data = await response.json();
+      console.log(data);
+      return data;
+    } catch (err) {
+      error = err.message;
+      console.error(err);
+    }
+
+    isDataLoading = false;
+  }
+
+
+
+  async function handleSubmit() {
+    if (shouldReplaceStocks && replacementTicker === "") {
+      error = "Please enter a replacement ticker";
+      isDataLoading = false;
+      return;
+    }
+    if (inputtedComposerCode === "") {
+      error = "Please enter a composer code";
+      isDataLoading = false;
+      return;
+    }
+    if (manualApprove) {
+      potentialReplacements = await fetchPotentialReplacements();
+      isDataLoading = false;
+      data = null;
+     
+    } else {
+      await fetchNewComposerCode();
+    }
+  }
   function copyToClipboard() {
     const el = document.createElement('textarea');
     if (data === null) return;
@@ -53,6 +127,68 @@
     document.body.removeChild(el);
     copied = true;
   }
+  async function fetchNewComposerCode() {
+    isDataLoading = true;
+    error = null; 
+    let replacements = null;
+    if (manualApprove == false  && potentialReplacements.length === 0) {
+      replacements = await fetchPotentialReplacements();
+    }
+    else {
+      replacements = selectedReplacements;
+    }
+    console.log(date, allowK1, inputtedComposerCode, shouldReplaceStocks, replacementTicker, data);
+    console.log("fetching new composer code")
+    try {
+      const response = await fetch('/new-composer-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        
+        body: JSON.stringify({ date, allowK1, inputtedComposerCode, shouldReplaceStocks, replacementTicker, replacements }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error fetching new composer code');
+      }
+      
+      data = await response.json();
+      potentialReplacements = [];
+      console.log(data);
+    } catch (err) {
+      error = err.message;
+      console.error(err);
+    }
+
+    isDataLoading = false;
+  }
+
+  /**
+   * @param {boolean} approve
+   * @param {ReplacedTicker} replacement
+   */
+   function handleReplacement(approve, replacement) {
+  if (approve) {
+    replacement.approved = true;
+    replacement.denied = false;
+  } else {
+    replacement.approved = false;
+    replacement.denied = true;
+  }
+
+  potentialReplacements = potentialReplacements.map((r) => {
+    if (r === replacement) {
+      return replacement;
+    }
+    return r;
+  });
+
+  selectedReplacements = selectedReplacements.filter((r) => r !== replacement);
+  if (approve) {
+    selectedReplacements = [...selectedReplacements, replacement];
+  }
+}
 </script>
 <div class="bg-white min-h-screen flex flex-col">
 <main class="flex-grow flex flex-col items-center justify-center p-8">
@@ -74,6 +210,14 @@
       </label>
     </div>
     
+  <div class="mb-6">
+    <label for="manualApprove" class="flex items-center">
+      <input id="manualApprove" type="checkbox" bind:checked={manualApprove} class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2">
+      <span class="ml-2 text-sm font-medium text-gray-900">Manually Approve Replacements</span>
+    </label>
+  </div>
+
+    
     {#if shouldReplaceStocks}
       <div class="mb-6">
         <label for="replaceTicker" class="block text-sm font-medium text-gray-900 mb-1">Replace with ticker:</label>
@@ -92,20 +236,32 @@
       <label for="composerCode" class="block text-sm font-medium text-gray-900 mb-1 mr-4 ">Insert Composer Code:</label>
       <img src={GuidingScreenshot} width="200" height="100" alt="guiding composer code">
     </div>
-    <textarea id="composerCode" rows="6" class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-blue-500 focus:border-blue-500" bind:value={inputtedComposerCode} placeholder="Insert Clojure style Composer Code here, I.E. (defsymphony @parts UVXY parts of v4 Pops l 18 April 2012 | SHARED :rebalance-frequency :daily "></textarea>
+    <textarea id="composerCode" rows="6" class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-blue-500 focus:border-blue-500" bind:value={inputtedComposerCode} placeholder="Insert Clojure style Composer Code here, I.E. (defsymphony ...)"></textarea>
   </div>
   
   <div class="flex items-center gap-4 mb-8">
-    <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" on:click={handleSubmit} disabled={isDataLoading}>
-      Submit
+    <button
+      class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      on:click={handleSubmit}
+    >
+      {#if manualApprove}
+        Fetch Potential Replacements
+      {:else}
+        Fetch New Composer Code
+      {/if}
     </button>
+  
     {#if isDataLoading}
       <div class="ml-4">
         <Jumper size="40" color="#3B82F6" unit="px" duration="1s" />
       </div>
     {/if}
+  
     {#if data !== null}
-      <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2" on:click={copyToClipboard}>
+      <button
+        class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+        on:click={copyToClipboard}
+      >
         {#if copied}
           Copied!
         {:else}
@@ -114,6 +270,107 @@
       </button>
     {/if}
   </div>
+
+  {#if potentialReplacements.length > 0}
+  <div class="mt-8">
+    <h2 class="text-xl font-bold mb-4">Potential Replacements</h2>
+    <div class="space-y-6">
+      {#each potentialReplacements as replacement, index}
+      <div class="bg-gray-100 p-6 rounded-lg">
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <p class="text-sm font-semibold">Original Ticker:</p>
+            <p class="text-lg">{replacement.originalTicker}</p>
+          </div>
+          <div class="ml-8 flex items-center">
+            <p class="text-sm font-semibold">Replacement Ticker:</p>
+            {#if replacement.editing}
+              <input
+                type="text"
+                class="text-lg ml-2 border border-gray-300 rounded px-2 py-1"
+                bind:value={replacement.replacementTicker}
+                on:blur={() => (replacement.editing = false)}
+                on:keydown={(e) => {
+                  if (e.key === 'Enter') {
+                    replacement.editing = false}
+                }}
+              />
+            {:else}
+              <p class="text-lg ml-2">{replacement.replacementTicker}</p>
+              <button
+                class="ml-2 focus:outline-none"
+                on:click={() => (replacement.editing = true)}
+              >
+              <i class="fas fa-pencil-alt"></i>
+              </button>
+            {/if}
+          </div>
+        </div>
+        {#if replacement.correlation !== undefined}
+          <p class="text-gray-600 text-sm mb-4">Correlation (1Y): {replacement.correlation}</p>
+        {/if}
+          <!-- <p class="text-gray-600 text-sm mb-4">Correlation (1Y): {replacement.correlation}</p> -->
+          <button
+          class="mt-2 py-2 px-4 rounded font-semibold text-white"
+          class:bg-blue-500={!replacement.approved}
+          class:hover:bg-blue-600={!replacement.approved}
+          class:bg-green-500={replacement.approved}
+          class:hover:bg-green-600={replacement.approved}
+          on:click={() => handleReplacement(true, replacement)}
+          disabled={replacement.approved}
+        >
+          {#if replacement.approved}
+            Approved
+          {:else}
+            Approve
+          {/if}
+        </button>
+        <button
+          class="mt-2 py-2 px-4 rounded font-semibold text-white"
+          class:bg-gray-500={!replacement.denied}
+          class:hover:bg-gray-600={!replacement.denied}
+          class:bg-red-500={replacement.denied}
+          class:hover:bg-red-600={replacement.denied}
+          on:click={() => handleReplacement(false, replacement)}
+          disabled={replacement.denied}
+        >
+          {#if replacement.denied}
+            Denied
+          {:else}
+            Deny
+          {/if}
+        </button>
+        </div>
+      {/each}
+    </div>
+    {#if data === null}
+    <button
+    class="py-2 my-4 px-4 rounded font-semibold text-white focus:outline-none focus:ring-2 focus:ring-offset-2"
+    class:bg-blue-500={allReplacementsProcessed}
+    class:hover:bg-blue-600={allReplacementsProcessed}
+    class:focus:ring-blue-500={allReplacementsProcessed}
+    class:bg-gray-400={!allReplacementsProcessed}
+    class:cursor-not-allowed={!allReplacementsProcessed}
+    on:click={fetchNewComposerCode}
+    disabled={!allReplacementsProcessed || isDataLoading}
+  >
+    Submit
+  </button>
+    {/if}
+    {#if data !== null}
+      <button
+        class="mt-6 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded"
+        on:click={copyToClipboard}
+      >
+        {#if copied}
+          Copied!
+        {:else}
+          Copy New Composer Code
+        {/if}
+      </button>
+    {/if}
+  </div>
+{/if}
 
   {#if data !== null}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
@@ -126,10 +383,12 @@
           {/if}
         </h2>
         <div class="space-y-4">
-          {#each data.INDIVIDUAL_TICKERS as ticker}
+          {#each data.REPLACED_TICKERS as ticker}
+          {#if ticker.correlation === undefined}
             <div class="bg-gray-100 p-4 rounded-lg">
-              <p class="text-md font-semibold">{ticker}</p>
+              <p class="text-md font-semibold">{ticker.originalTicker}</p>
             </div>
+          {/if}
           {/each}
         </div>
       </div>
@@ -138,14 +397,25 @@
       <div class="bg-white p-6 rounded-lg shadow-md">
         <h2 class="text-xl font-bold mb-4">Replaced Ticker and Correlation</h2>
         <div class="space-y-4">
-          {#each data.REPLACED_TICKERS as item}
+          {#each data.REPLACED_TICKERS as ticker}
+          {#if ticker.correlation !== undefined}
             <div class="bg-gray-100 p-4 rounded-lg">
               <div class="flex justify-between items-center mb-2">
-                <p class="text-md font-semibold">Original Ticker: {item.originalTicker}</p>
-                <p class="text-md font-semibold">Replaced Ticker: {item.replacementTicker}</p>
+                <p class="text-md font-semibold">Original Ticker: {ticker.originalTicker}</p>
+                <p class="text-md font-semibold">Replaced Ticker: {ticker.replacementTicker}</p>
               </div>
-              <p class="text-gray-600">Correlation (1Y): {item.correlation}</p>
+              <p class="text-gray-600">Correlation (1Y): {ticker.correlation}</p>
             </div>
+          {/if}
+          {#if ticker.correlation === undefined && ticker.replacementTicker !== replacementTicker}
+          <div class="bg-gray-100 p-4 rounded-lg">
+            <div class="flex justify-between items-center mb-2">
+              <p class="text-md font-semibold">Original Ticker: {ticker.originalTicker}</p>
+              <p class="text-md font-semibold">Replaced Ticker: {ticker.replacementTicker}</p>
+            </div>
+            <p class="text-gray-600">Correlation (1Y): {ticker.correlation}</p>
+          </div>
+        {/if}
           {/each}
         </div>
       </div>

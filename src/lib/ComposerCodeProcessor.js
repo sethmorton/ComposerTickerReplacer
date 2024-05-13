@@ -31,7 +31,10 @@ class TickerReplacer {
     /** @private {boolean} */
     this.allowK1_ = allowK1;
     
-    /** @private {Array<string>} */
+    /**
+     * 
+     * @type {string[]}
+     */
     this.validTickers_ = [];
     
     /** @public {Array<string>} */
@@ -40,7 +43,10 @@ class TickerReplacer {
     /** @public {Array<Object>} */
     this.replacedTickers_ = [];
     
-    /** @private {Array<string>} */
+    /**
+     * 
+     * @type {string | string[]}
+     */
     this.k1Tickers_ = [];
 
     /**
@@ -54,6 +60,22 @@ class TickerReplacer {
      */
     this.replacementTicker = replacementTicker;
   }
+
+  /**
+ * @typedef {Object} ReplacedTicker
+ * @property {string} originalTicker - The original ticker symbol
+ * @property {string} replacementTicker - The replacement ticker symbol (e.g., 'QQQ')
+ * @property {boolean} isIndividualAsset - Indicates if the ticker represents an individual asset
+ * @property {boolean} approved - Indicates if the replacement has been approved
+ * @property {boolean} denied - Indicates if the replacement has been denied
+ * @property {number} correlation - The correlation between the original and replacement tickers
+ */
+
+/**
+ * @typedef {Object} ComposerData
+ * @property {string} NEW_COMPOSER_CODE - The new composer code
+ * @property {ReplacedTicker[]} REPLACED_TICKERS - An array of replaced tickers
+ */
 
   /**
    * Initializes the TickerReplacer.
@@ -131,7 +153,7 @@ class TickerReplacer {
    */
   async initK1Tickers_() {
     const k1Json = JSON.stringify(K1Json);
-    this.k1Tickers_ = JSON.parse(k1Json).map((item) => item.ticker);
+    this.k1Tickers_ = JSON.parse(k1Json).map((/** @type {{ ticker: string; }} */ item) => item.ticker);
   }
 
   /**
@@ -141,7 +163,15 @@ class TickerReplacer {
    */
   async loadCache_() {
     try {
-      this.cache_ = new Map(Object.entries(cacheData || {}));
+      // if node js
+      // if (typeof window === 'undefined') {
+      // const cacheFilePath = path.join(__dirname, 'cache.json');
+      // const cacheData = await fs.readFile(cacheFilePath, 'utf8')
+      // this.cache_ = new Map(Object.entries(cacheData || {}));
+      // } 
+      // else {
+        this.cache_ = new Map(Object.entries(cacheData || {}));
+      // }
     } catch (err) {
       if (err.code !== 'ENOENT') {
         console.error('Error reading cache file:', err);
@@ -152,31 +182,41 @@ class TickerReplacer {
   /**
    * Fetches data for the given ticker and caches it if not already cached or if the existing data is invalid.
    * @param {string} ticker - The ticker symbol to fetch data for.
-   * @return {Promise<Object|undefined>} - The fetched data or undefined if an error occurs.
+   * @return {Promise<cachedData|undefined>} - The fetched data or undefined if an error occurs.
    */
   async fetchAndCacheData_(ticker) {
+    /** @type {cachedData} */
     const cachedData = this.cache_.get(ticker);
     console.log(cachedData);
+  
     if (this.isDataValid_(cachedData)) {
       console.log(`Using cached data for ${ticker}:`, cachedData);
       return cachedData;
     }
-
+  
     try {
       const data = await this.fetchData_(ticker);
       const existingData = this.cache_.get(ticker) || {};
-      this.cache_.set(ticker, {...existingData, ...data});
+      this.cache_.set(ticker, { ...existingData, ...data });
       console.log(`Fetched data for ${ticker}:`, data);
       return data;
     } catch (error) {
       return undefined;
     }
   }
+  
+  /**
+   * @typedef {Object} cachedData
+   * @property {string} [inceptionDate] - The inception date of the ticker
+   * @property {string[]} [correlatedTickers] - An array of correlated ticker symbols
+   * @property {boolean} [isIndividualAsset] - Indicates if the ticker represents an individual asset
+   * @property {boolean} [isK1Ticker] - Indicates if the ticker is a K1 ticker
+   */
 
   /**
    * Checks if the given data is valid.
    * @private
-   * @param {Object} data - The data to validate.
+   * @param {cachedData} data - The data to validate.
    * @return {boolean} - True if the data is valid, false otherwise.
    */
   isDataValid_(data) {
@@ -193,7 +233,7 @@ class TickerReplacer {
    * Scrapes composer ETF data for the given ticker.
    * @private
    * @param {string} ticker - The ticker symbol to scrape data for.
-   * @return {Promise<Object|undefined>} - The scraped data or undefined if an error occurs.
+   * @return {Promise<ProcessedData|undefined>} - The scraped data or undefined if an error occurs.
    */
   async scrapeComposerEtfData_(ticker) {
     try {
@@ -212,51 +252,74 @@ class TickerReplacer {
     }
   }
 
-  /**
-   * Processes the script content and extracts relevant data.
-   * @private
-   * @param {string} scriptContent - The script content to process.
-   * @return {Object} - The processed data.
-   */
-  processScriptContent_(scriptContent) {
-    const json = JSON.parse(scriptContent);
+/**
+ * @typedef {Object} EtfData
+ * @property {string} ticker - The ETF ticker symbol
+ * @property {number} correlation - The 1-year correlation value
+ */
 
-    const listingDate = json.props.pageProps.data.characteristics.ListingDate;
-    console.log(listingDate);
+/**
+ * @typedef {Object} ProcessedData
+ * @property {string} inceptionDate - The listing date of the ETF
+ * @property {EtfData[]} data - The merged array of correlated and related ETFs
+ */
 
-    const correlatedEtfs = json.props.pageProps.data.relations.correlated
-      .sort((a, b) => b.correlation_1y - a.correlation_1y)
-      .filter((etf) => etf.correlation_1y > 0);
-    console.log(correlatedEtfs);
+/**
+ * Processes the script content and extracts relevant data.
+ * @private
+ * @param {string} scriptContent - The script content to process.
+ * @return {ProcessedData} - The processed data.
+ */
+processScriptContent_(scriptContent) {
+  const json = JSON.parse(scriptContent);
+  const listingDate = json.props.pageProps.data.characteristics.ListingDate;
+  console.log(listingDate);
 
-    const relatedEtfs = json.props.pageProps.data.relations.related
-      .sort((a, b) => b.correlation_1y - a.correlation_1y)
-      .filter((etf) => etf.correlation_1y > 0);
-    console.log(relatedEtfs);
+  const correlatedEtfs = json.props.pageProps.data.relations.correlated
+    .sort((a, b) => b.correlation_1y - a.correlation_1y)
+    .filter((etf) => etf.correlation_1y > 0);
+  console.log(correlatedEtfs);
 
-    const mergedEtfs = [
-      ...this.mapEtfData_(correlatedEtfs),
-      ...this.mapEtfData_(relatedEtfs),
-    ];
+  const relatedEtfs = json.props.pageProps.data.relations.related
+    .sort((a, b) => b.correlation_1y - a.correlation_1y)
+    .filter((etf) => etf.correlation_1y > 0);
+  console.log(relatedEtfs);
 
-    return {
-      inceptionDate: listingDate,
-      data: mergedEtfs,
-    };
-  }
+  const mergedEtfs = [
+    ...this.mapEtfData_(correlatedEtfs),
+    ...this.mapEtfData_(relatedEtfs),
+  ];
 
-  /**
-   * Maps ETF data to a simplified format.
-   * @private
-   * @param {Array<Object>} etfs - The ETFs to map.
-   * @return {Array<Object>} - The mapped ETF data.
-   */
-  mapEtfData_(etfs) {
-    return etfs.map((etf) => ({
-      ticker: etf.ticker,
-      correlation: etf.correlation_1y,
-    }));
-  }
+  return {
+    inceptionDate: listingDate,
+    data: mergedEtfs,
+  };
+}
+
+/**
+ * @typedef {Object} Etf
+ * @property {string} ticker - The ETF ticker symbol
+ * @property {number} correlation_1y - The 1-year correlation value
+ */
+
+/**
+ * @typedef {Object} MappedEtf
+ * @property {string} ticker - The ETF ticker symbol
+ * @property {number} correlation - The 1-year correlation value
+ */
+
+/**
+ * Maps ETF data to a simplified format.
+ * @private
+ * @param {Etf[]} etfs - The ETFs to map.
+ * @return {MappedEtf[]} - The mapped ETF data.
+ */
+mapEtfData_(etfs) {
+  return etfs.map((etf) => ({
+    ticker: etf.ticker,
+    correlation: etf.correlation_1y,
+  }));
+}
 
   /**
    * Fetches data for the given ticker.
@@ -268,7 +331,13 @@ class TickerReplacer {
     const response = await this.scrapeComposerEtfData_(ticker);
     let inceptionDate;
     let isIndividualAsset;
+    /**
+     * @type {string[]}
+     */
     let correlatedTickers = [];
+    /**
+     * @type {number[]}
+     */
     let correlationValues = [];
 
     if (response === undefined) {
@@ -318,18 +387,29 @@ class TickerReplacer {
     }
     visitedTickers.add(targetTicker);
 
+    const data = await this.fetchAndCacheData_(targetTicker);
+    if (data === undefined) {
+      return null;
+    }
+    
     const {
       inceptionDate: targetTickerInceptionString,
       correlatedTickers: targetCorrelatedTickers,
       isIndividualAsset: isTargetTickerIndividualAsset,
       isK1Ticker: isTargetTickerK1,
-    } = await this.fetchAndCacheData_(targetTicker);
+    } = data;
+    
+    if (
+      targetTickerInceptionString === undefined ||
+      targetCorrelatedTickers === undefined ||
+      isTargetTickerIndividualAsset === undefined ||
+      isTargetTickerK1 === undefined
+    ) {
+      return null;
+    }
+
 
     const targetTickerInceptionDate = new Date(targetTickerInceptionString);
-
-    if (isTargetTickerIndividualAsset) {
-      this.individualTickers_.push(targetTicker);
-    }
 
     // Check if the target ticker is suitable
     if (
@@ -438,6 +518,65 @@ class TickerReplacer {
     const tickerFormatRegex = /^([A-Za-z]{1,5})(-[A-Za-z]{1,2})?$/;
     return tickerFormatRegex.test(ticker);
   }
+
+  async getTickerReplacements() {
+    const replacements = [];
+  
+    for (const ticker of this.validTickers_) {
+      const historicalTicker = await this.findHistoricalTicker_(
+        ticker,
+        this.date_,
+        this.allowK1_
+      );
+  
+      if (this.shouldReplaceStocks && this.replacementTicker !== "") {
+        console.log("Replacing stocks for", this.replacementTicker);
+        if (
+          this.cache_.get(historicalTicker).isIndividualAsset &&
+          new Date(this.cache_.get(ticker).inceptionDate) < new Date(this.date_)
+        ) {
+          replacements.push({
+            originalTicker: ticker,
+            replacementTicker: this.replacementTicker,
+            isIndividualAsset: true,
+          });
+          // this.individualTickers_.push(ticker);
+        }
+      }
+      if (historicalTicker !== ticker) {
+        const tickerData = this.cache_.get(ticker);
+        const correlationIndex = tickerData.correlatedTickers.indexOf(historicalTicker);
+        const correlation = tickerData.correlationValues[correlationIndex];
+        if (!this.cache_.get(historicalTicker).isIndividualAsset) {
+        replacements.push({
+          originalTicker: ticker,
+          replacementTicker: historicalTicker,
+          correlation: correlation,
+          isIndividualAsset: false,
+        });
+      }
+      }
+    }
+  
+    return replacements;
+  }
+
+
+  async replaceTickersInComposerCode(replacements) {
+    for (const replacement of replacements) {
+      if (replacement.denied !== undefined && replacement.denied) {
+        continue;
+      }
+        await this.replaceTickerInComposerCode(
+          this.composerCode_,
+          replacement.originalTicker,
+          replacement.replacementTicker
+        );
+    }
+
+    return {NEW_COMPOSER_CODE : this.replaceStackedQuotesInComposerCode(this.composerCode_), REPLACED_TICKERS: replacements};
+  }
+  
   /**
    * 
    * @param {*} composerCode 
@@ -464,51 +603,8 @@ class TickerReplacer {
 
     this.composerCode_ = replacedCode;
   }
-  /**
-   * 
-   * @returns 
-   */
-  async replaceTickersInComposerCode() {
-    for (const ticker of this.validTickers_) {
-      const historicalTicker = await this.findHistoricalTicker_(
-        ticker,
-        this.date_,
-        this.allowK1_
-      );
 
-      if (this.shouldReplaceStocks && this.replacementTicker !== "") {
-        console.log("Replacing stocks for", this.replacementTicker);
 
-      if ((this.cache_.get(historicalTicker).isIndividualAsset) && (new Date(this.cache_.get(ticker).inceptionDate) < new Date(this.date_))) {
-        await this.replaceTickerInComposerCode(
-          this.composerCode_,
-          ticker,
-          this.replacementTicker,
-        );
-      }
-    }
-  
-      if (historicalTicker !== ticker) {
-        const tickerData = this.cache_.get(ticker);
-        const correlationIndex = tickerData.correlatedTickers.indexOf(historicalTicker);
-        const correlation = tickerData.correlationValues[correlationIndex];
-  
-        this.replacedTickers_.push({
-          originalTicker: ticker,
-          replacementTicker: historicalTicker,
-          correlation: correlation,
-        });
-  
-        await this.replaceTickerInComposerCode(
-          this.composerCode_,
-          ticker,
-          historicalTicker
-        );
-      }
-    }
-  
-    return this.replaceStackedQuotesInComposerCode(this.composerCode_);
-  }
   /**
    * 
    * @param {string} inputString 
