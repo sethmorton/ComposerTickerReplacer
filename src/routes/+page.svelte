@@ -177,6 +177,7 @@ async function fetchPotentialReplacements() {
       
       data = await response.json();
       potentialReplacements = [];
+      copied = false;
       console.log(data);
     } catch (err) {
       error = err.message;
