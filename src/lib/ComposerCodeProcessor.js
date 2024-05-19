@@ -620,12 +620,15 @@ mapEtfData_(etfs) {
   
     for (const stackedQuoteMatch of stackedQuoteMatches) {
       if (stackedQuoteMatch.split('"').length > 3) {
-        const strippedStackedQuote = stackedQuoteMatch.replace(/"/g, '');
+        console.log("Stacked quote found:", stackedQuoteMatch);
+        const strippedStackedQuote = stackedQuoteMatch.replace(/['"\\]/g, '');
+        console.log("Stripped stacked quote:", strippedStackedQuote);
         const updatedStackedQuote = strippedStackedQuote.replace(
           `[(group`,
           `[(group "`
         );
         const finalStackedQuote = updatedStackedQuote + '"';
+        console.log("Final stacked quote:", finalStackedQuote);
         inputString = inputString.replace(stackedQuoteMatch, finalStackedQuote);
       }
     }
