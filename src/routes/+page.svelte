@@ -68,17 +68,32 @@ let data = null;
   );
 }
 
-  async function fetchPotentialReplacements() {
-    isDataLoading = true;
-    error = null;
+async function fetchPotentialReplacements() {
+  isDataLoading = true;
+  error = null;
+
+  const maxRetries = 3;
+  const retryDelay = 10000; // 1 second
+
+  for (let retry = 0; retry < maxRetries; retry++) {
     try {
       const response = await fetch('/potential-replacements', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ date, allowK1, inputtedComposerCode, shouldReplaceStocks, replacementTicker }),
+        body: JSON.stringify({
+          date,
+          allowK1,
+          inputtedComposerCode,
+          shouldReplaceStocks,
+          replacementTicker,
+        }),
       });
+
+      if (response.status === 502) {
+        throw new Error('Bad Gateway');
+      }
 
       if (!response.ok) {
         throw new Error('Error fetching potential replacements');
@@ -86,15 +101,22 @@ let data = null;
 
       const data = await response.json();
       console.log(data);
+      isDataLoading = false;
       return data;
     } catch (err) {
-      error = err.message;
-      console.error(err);
+      if (retry === maxRetries - 1) {
+        // Last retry attempt failed
+        error = err.message;
+        console.error(err);
+        isDataLoading = false;
+        return null;
+      }
+
+      // Wait for the specified delay before retrying
+      await new Promise((resolve) => setTimeout(resolve, retryDelay));
     }
-
-    isDataLoading = false;
   }
-
+}
 
 
   async function handleSubmit() {
