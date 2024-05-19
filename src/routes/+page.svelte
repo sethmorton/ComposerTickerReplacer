@@ -27,8 +27,12 @@ import { DateInput } from "date-picker-svelte";
   /** @type {boolean} */
   let manualApprove = false;
 
+  /** @type {boolean} */
+  let replaceConditions = false;
+
   /** @type {{}[]} */
   let potentialReplacements = [];
+  
 
   /** @type {{}[]} */
   let selectedReplacements = [];
@@ -168,7 +172,7 @@ async function fetchPotentialReplacements() {
           'Content-Type': 'application/json',
         },
         
-        body: JSON.stringify({ date, allowK1, inputtedComposerCode, shouldReplaceStocks, replacementTicker, replacements }),
+        body: JSON.stringify({ date, allowK1, inputtedComposerCode, shouldReplaceStocks, replacementTicker, replacements, replaceConditions }),
       });
 
       if (!response.ok) {
@@ -239,6 +243,14 @@ async function fetchPotentialReplacements() {
       <span class="ml-2 text-sm font-medium text-gray-900">Manually Approve Replacements</span>
     </label>
   </div>
+
+  <div class="mb-6">
+    <label for="manualApprove" class="flex items-center">
+      <input id="manualApprove" type="checkbox" bind:checked={replaceConditions} class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2">
+      <span class="ml-2 text-sm font-medium text-gray-900">Replace Conditionals</span>
+    </label>
+  </div>
+
 
     
     {#if shouldReplaceStocks}

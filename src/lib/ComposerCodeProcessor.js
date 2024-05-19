@@ -561,8 +561,13 @@ mapEtfData_(etfs) {
     return replacements;
   }
 
-
-  async replaceTickersInComposerCode(replacements) {
+  /**
+   * 
+   * @param {*} replacements - Array of replacements
+   * @param {*} replaceConditions - Boolean of whether to replace conditions
+   * @returns 
+   */
+  async replaceTickersInComposerCode(replacements, replaceConditions) {
     for (const replacement of replacements) {
       if (replacement.denied !== undefined && replacement.denied) {
         continue;
@@ -570,7 +575,7 @@ mapEtfData_(etfs) {
         await this.replaceTickerInComposerCode(
           this.composerCode_,
           replacement.originalTicker,
-          replacement.replacementTicker
+          replacement.replacementTicker, replaceConditions
         );
     }
 
