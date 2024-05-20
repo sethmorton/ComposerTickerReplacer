@@ -28,7 +28,7 @@ import { DateInput } from "date-picker-svelte";
   let manualApprove = false;
 
   /** @type {boolean} */
-  let replaceConditions = false;
+  let replaceConditions = true;
 
   /** @type {ReplacedTicker[]} */
   let potentialReplacements = [];
