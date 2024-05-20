@@ -154,6 +154,7 @@ async function fetchPotentialReplacements() {
     else {
       replacements = selectedReplacements;
     }
+    isDataLoading = true;
     console.log(date, allowK1, inputtedComposerCode, shouldReplaceStocks, replacementTicker, data);
     console.log("fetching new composer code")
     try {
@@ -174,6 +175,7 @@ async function fetchPotentialReplacements() {
       potentialReplacements = [];
       copied = false;
       console.log(data);
+      isDataLoading = false;
     } catch (err) {
       error = err.message;
       console.error(err);
