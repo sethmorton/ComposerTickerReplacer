@@ -30,11 +30,11 @@ import { DateInput } from "date-picker-svelte";
   /** @type {boolean} */
   let replaceConditions = false;
 
-  /** @type {{}[]} */
+  /** @type {ReplacedTicker[]} */
   let potentialReplacements = [];
   
 
-  /** @type {{}[]} */
+  /** @type {ReplacedTicker[]} */
   let selectedReplacements = [];
 
 /**
@@ -75,53 +75,44 @@ let data = null;
 async function fetchPotentialReplacements() {
   isDataLoading = true;
   error = null;
+  const maxDelay = 15000; // 15 seconds
 
-  const maxRetries = 3;
-  const retryDelay = 10000; // 1 second
+  try {
+    const response = await fetch('/potential-replacements', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        date,
+        allowK1,
+        inputtedComposerCode,
+        shouldReplaceStocks,
+        replacementTicker,
+      }),
+    });
 
-  for (let retry = 0; retry < maxRetries; retry++) {
-    try {
-      const response = await fetch('/potential-replacements', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          date,
-          allowK1,
-          inputtedComposerCode,
-          shouldReplaceStocks,
-          replacementTicker,
-        }),
-      });
-
-      if (response.status === 502) {
-        throw new Error('Bad Gateway');
-      }
-
-      if (!response.ok) {
-        throw new Error('Error fetching potential replacements');
-      }
-
-      const data = await response.json();
-      console.log(data);
-      isDataLoading = false;
-      return data;
-    } catch (err) {
-      if (retry === maxRetries - 1) {
-        // Last retry attempt failed
-        error = err.message;
-        console.error(err);
-        isDataLoading = false;
-        return null;
-      }
-
-      // Wait for the specified delay before retrying
-      await new Promise((resolve) => setTimeout(resolve, retryDelay));
+    if (response.status === 502) {
+      // Wait for the specified delay before throwing the error
+      await new Promise((resolve) => setTimeout(resolve, maxDelay));
+      throw new Error('Bad Gateway');
     }
+
+    if (!response.ok) {
+      throw new Error('Error fetching potential replacements');
+    }
+
+    const data = await response.json();
+    console.log(data);
+    isDataLoading = false;
+    return data;
+  } catch (err) {
+    error = err.message;
+    console.error(err);
+    isDataLoading = false;
+    return null;
   }
 }
-
 
   async function handleSubmit() {
     if (shouldReplaceStocks && replacementTicker === "") {

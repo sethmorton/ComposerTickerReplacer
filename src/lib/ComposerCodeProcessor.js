@@ -134,6 +134,9 @@ class TickerReplacer {
               validTickers.push(ticker);
               this.cache_.set(ticker, {ticker, tradable});
             }
+            /**
+             * 
+             */
           } catch (error) {
             console.error(`Error validating ticker ${ticker}:`, error.message);
           }
@@ -276,13 +279,13 @@ processScriptContent_(scriptContent) {
   console.log(listingDate);
 
   const correlatedEtfs = json.props.pageProps.data.relations.correlated
-    .sort((a, b) => b.correlation_1y - a.correlation_1y)
-    .filter((etf) => etf.correlation_1y > 0);
+    .sort((/** @type {{ correlation_1y: number; }} */ a, /** @type {{ correlation_1y: number; }} */ b) => b.correlation_1y - a.correlation_1y)
+    .filter((/** @type {{ correlation_1y: number; }} */ etf) => etf.correlation_1y > 0);
   console.log(correlatedEtfs);
 
   const relatedEtfs = json.props.pageProps.data.relations.related
-    .sort((a, b) => b.correlation_1y - a.correlation_1y)
-    .filter((etf) => etf.correlation_1y > 0);
+    .sort((/** @type {{ correlation_1y: number; }} */ a, /** @type {{ correlation_1y: number; }} */ b) => b.correlation_1y - a.correlation_1y)
+    .filter((/** @type {{ correlation_1y: number; }} */ etf) => etf.correlation_1y > 0);
   console.log(relatedEtfs);
 
   const mergedEtfs = [
