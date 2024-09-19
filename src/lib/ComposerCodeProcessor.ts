@@ -1,8 +1,9 @@
 import K1Json from '$lib/assets/k1.json';
 import cacheData from '$lib/assets/cache.json';
+import ETF_LIST from '$lib/assets/ETF_LIST.json';
 import chowdown from 'chowdown';
 import { LRUCache } from 'lru-cache';
-import type { ReplacedTicker, ComposerData } from '$lib/types';
+import type { ReplacedTicker, ComposerData, ETFData } from '$lib/types';
 import { logger } from '$lib/logger';
 export class ComposerBacktestProcessor {
 	private cache: LRUCache<string, any>;
@@ -116,7 +117,13 @@ export class ComposerBacktestProcessor {
 
 	private async fetchAndCacheData(ticker: string): Promise<any> {
 		const cachedData = this.cache.get(ticker);
-		if (this.isDataValid(cachedData)) return cachedData;
+		logger.info(`Fetching data for ${ticker}`);
+		logger.info(`Cached data for ${ticker}:`, cachedData);
+		if (this.isDataValid(cachedData)) {
+			logger.debug(`Data for ${ticker} is valid`);
+			return cachedData;
+		}
+
 		try {
 			const data = await this.fetchTickerData(ticker);
 			this.cache.set(ticker, { ...this.cache.get(ticker), ...data });
@@ -137,10 +144,14 @@ export class ComposerBacktestProcessor {
 		);
 	}
 
-	private async fetchTickerData(ticker: string): Promise<any> {
-		const etfData = await this.scrapeComposerEtfData(ticker);
+	private async isETF(ticker: string): Promise<boolean> {
+		logger.info(`Checking if ${ticker} is an ETF`);
+		return ETF_LIST.some((etf) => etf.symbol === ticker);
+	}
 
-		if (etfData === undefined) {
+	private async fetchTickerData(ticker: string): Promise<any> {
+		const IS_ETF = await this.isETF(ticker);
+		if (IS_ETF === false) {
 			const apiUrl = `https://financialmodelingprep.com/api/v3/profile/${ticker}?apikey=${this.FMP_API_KEY}`;
 			const response = await fetch(apiUrl);
 			const jsonData = await response.json();
@@ -153,17 +164,18 @@ export class ComposerBacktestProcessor {
 				isK1Ticker: this.k1Tickers.has(ticker)
 			};
 		} else {
+			const ETF_DATA = await this.scrapeComposerEtfData(ticker);
 			return {
-				inceptionDate: new Date(etfData.inceptionDate),
-				correlatedTickers: etfData.data.map((correlatedEtf: any) => correlatedEtf.ticker),
-				correlationValues: etfData.data.map((correlatedEtf: any) => correlatedEtf.correlation),
+				inceptionDate: new Date(ETF_DATA.inceptionDate),
+				correlatedTickers: ETF_DATA.data.map((correlatedEtf: any) => correlatedEtf.ticker),
+				correlationValues: ETF_DATA.data.map((correlatedEtf: any) => correlatedEtf.correlation),
 				isIndividualAsset: false,
 				isK1Ticker: this.k1Tickers.has(ticker)
 			};
 		}
 	}
 
-	private async scrapeComposerEtfData(ticker: string): Promise<any> {
+	private async scrapeComposerEtfData(ticker: string): Promise<ETFData | undefined> {
 		try {
 			const scope = await chowdown(`https://www.composer.trade/etf/${ticker}`);
 			if (scope.error) throw new Error(scope.error);
@@ -175,7 +187,10 @@ export class ComposerBacktestProcessor {
 		}
 	}
 
-	private processScriptContent(scriptContent: string): any {
+	private processScriptContent(scriptContent: string): {
+		inceptionDate: string;
+		data: Array<{ ticker: string; correlation: number }>;
+	} {
 		const json = JSON.parse(scriptContent);
 		const { ListingDate: listingDate } = json.props.pageProps.data.characteristics;
 		const correlatedEtfs = json.props.pageProps.data.relations.correlated

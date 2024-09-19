@@ -12,3 +12,7 @@ export interface ComposerData {
 	NEW_COMPOSER_CODE: string;
 	REPLACED_TICKERS: ReplacedTicker[];
 }
+export interface ETFData {
+	inceptionDate: string;
+	data: Array<{ ticker: string; correlation: number }>;
+}
