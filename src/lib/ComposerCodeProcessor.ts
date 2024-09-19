@@ -119,6 +119,7 @@ export class ComposerBacktestProcessor {
 		const cachedData = this.cache.get(ticker);
 		logger.info(`Fetching data for ${ticker}`);
 		logger.info(`Cached data for ${ticker}:`, cachedData);
+		logger.info(`Data is valid: ${this.isDataValid(cachedData)}`);
 		if (this.isDataValid(cachedData)) {
 			logger.debug(`Data for ${ticker} is valid`);
 			return cachedData;
@@ -134,14 +135,7 @@ export class ComposerBacktestProcessor {
 	}
 
 	private isDataValid(data: any): boolean {
-		return (
-			data &&
-			data.inceptionDate instanceof Date &&
-			Array.isArray(data.correlatedTickers) &&
-			Array.isArray(data.correlationValues) &&
-			typeof data.isIndividualAsset === 'boolean' &&
-			typeof data.isK1Ticker === 'boolean'
-		);
+		return data !== undefined;
 	}
 
 	private async isETF(ticker: string): Promise<boolean> {
@@ -151,6 +145,7 @@ export class ComposerBacktestProcessor {
 
 	private async fetchTickerData(ticker: string): Promise<any> {
 		const IS_ETF = await this.isETF(ticker);
+		logger.info(`IS_ETF: ${IS_ETF}`);
 		if (IS_ETF === false) {
 			const apiUrl = `https://financialmodelingprep.com/api/v3/profile/${ticker}?apikey=${this.FMP_API_KEY}`;
 			const response = await fetch(apiUrl);
