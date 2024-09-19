@@ -89,15 +89,13 @@ async function processComposerCode(isInitialRequest: boolean = true): Promise<vo
     logger.error('Error processing composer code', { error });
   } finally {
     clearInterval(progressInterval);
-    const finalizeProgress = setInterval(() => {
-      progressValue = Math.min(progressValue + 1, 100);
-      progress.set(progressValue);
-      if (progressValue === 100) {
-        clearInterval(finalizeProgress);
-        isDataLoading = false;
-        setTimeout(() => progress.set(0), 1000);
+    progress.set(100); // Set progress to 100% when data is loaded
+    setTimeout(() => {
+      isDataLoading = false;
+      if (data !== null) {
+        progress.set(0); // Reset progress when "Copy New Composer Code" is available
       }
-    }, 20);
+    }, 500); // Short delay to show the full progress bar
   }
 }
 
@@ -266,7 +264,7 @@ onMount(() => {
 			  {/if}
 			</button>
 		  
-			{#if isDataLoading}
+			{#if isDataLoading || (data === null && $progress > 0)}
 			  <div class="w-64 h-2 bg-gray-200 rounded-full overflow-hidden">
 				<div class="h-full bg-blue-500 transition-all duration-300 ease-out" style="width: {$progress}%"></div>
 			  </div>

@@ -16,3 +16,11 @@ export interface ETFData {
 	inceptionDate: string;
 	data: Array<{ ticker: string; correlation: number }>;
 }
+
+export interface TickerData {
+	inceptionDate: Date;
+	correlatedTickers: string[];
+	correlationValues: number[];
+	isIndividualAsset: boolean;
+	isK1Ticker: boolean;
+}
