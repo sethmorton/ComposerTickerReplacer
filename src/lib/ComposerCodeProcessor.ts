@@ -15,8 +15,8 @@ export class ComposerBacktestProcessor {
 		private inputtedComposerCode: string,
 		private shouldReplaceStocks: boolean,
 		private replacementTicker: string,
-		private manualApprove: boolean,
-		private replaceConditions: boolean
+		private replaceConditions: boolean,
+		private manualApprove: boolean
 	) {
 		this.cache = new LRUCache({ max: 1000, ttl: 1000 * 60 * 60 * 24 }); // 24 hour TTL
 		this.k1Tickers = new Set(
@@ -27,27 +27,27 @@ export class ComposerBacktestProcessor {
 			allowK1,
 			shouldReplaceStocks,
 			replacementTicker,
-			manualApprove,
-			replaceConditions
+			replaceConditions,
+			manualApprove
 		});
 	}
 
 	async process(
 		isInitialRequest: boolean,
 		selectedReplacements: ReplacedTicker[] = []
-	): Promise<ComposerData | ReplacedTicker[]> {
+	): Promise<ComposerData | { potentialReplacements: ReplacedTicker[] }> {
 		logger.info('Starting process', { isInitialRequest });
 		await this.init();
 
-		if (isInitialRequest) {
+		if (isInitialRequest && this.manualApprove) {
 			const potentialReplacements = await this.getTickerReplacements();
 			logger.info('Potential replacements found', { count: potentialReplacements.length });
-			return this.manualApprove
-				? potentialReplacements
-				: this.processReplacements(potentialReplacements);
+			return { potentialReplacements };
 		} else {
-			logger.info('Processing selected replacements', { count: selectedReplacements.length });
-			return this.processReplacements(selectedReplacements);
+			const replacements = this.manualApprove
+				? selectedReplacements
+				: await this.getTickerReplacements();
+			return this.processReplacements(replacements);
 		}
 	}
 	private async init(): Promise<void> {

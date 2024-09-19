@@ -1,14 +1,15 @@
 import { ComposerBacktestProcessor } from '$lib/ComposerCodeProcessor';
+import type { RequestHandler } from '@sveltejs/kit';
 
-export async function POST({ request }) {
+export const POST: RequestHandler = async ({ request }) => {
 	const {
 		date,
 		allowK1,
 		inputtedComposerCode,
 		shouldReplaceStocks,
 		replacementTicker,
-		manualApprove,
 		replaceConditions,
+		manualApprove,
 		isInitialRequest,
 		selectedReplacements
 	} = await request.json();
@@ -19,11 +20,11 @@ export async function POST({ request }) {
 		inputtedComposerCode,
 		shouldReplaceStocks,
 		replacementTicker,
-		manualApprove,
-		replaceConditions
+		replaceConditions,
+		manualApprove
 	);
 
 	const result = await processor.process(isInitialRequest, selectedReplacements);
 
 	return new Response(JSON.stringify(result), { status: 200 });
-}
+};

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { Jumper } from 'svelte-loading-spinners';
-	import GuidingScreenshot from '$lib/images/guiding_screenshot.png';
-	import type { ReplacedTicker, ComposerData } from '$lib/types';
-	import { logger } from '$lib/logger';
-	import { tweened } from 'svelte/motion';
+import { Jumper } from 'svelte-loading-spinners';
+import GuidingScreenshot from '$lib/images/guiding_screenshot.png';
+import type { ReplacedTicker, ComposerData } from '$lib/types';
+import { logger } from '$lib/logger';
+import { tweened } from 'svelte/motion';
 import { cubicOut } from 'svelte/easing';
 
 let progress = tweened(0, {
@@ -11,87 +11,94 @@ let progress = tweened(0, {
   easing: cubicOut
 });
 
-	let date: string = new Date().toISOString().split('T')[0];
-	let allowK1: boolean = false;
-	let inputtedComposerCode: string = '';
-	let shouldReplaceStocks: boolean = false;
-	let replacementTicker: string = '';
-	let isDataLoading: boolean = false;
-	let error: string | null = null;
-	let manualApprove: boolean = false;
-	let replaceConditions: boolean = true;
-	let potentialReplacements: ReplacedTicker[] = [];
-	let selectedReplacements: ReplacedTicker[] = [];
-	let data: ComposerData | null = null;
-	let copied: boolean = false;
+let date: string = new Date().toISOString().split('T')[0];
+let allowK1: boolean = false;
+let inputtedComposerCode: string = '';
+let shouldReplaceStocks: boolean = false;
+let replacementTicker: string = '';
+let isDataLoading: boolean = false;
+let error: string | null = null;
+let manualApprove: boolean = false;
+let replaceConditions: boolean = true;
+let potentialReplacements: ReplacedTicker[] = [];
+let selectedReplacements: ReplacedTicker[] = [];
+let data: ComposerData | null = null;
+let copied: boolean = false;
 
-	$: allReplacementsProcessed = potentialReplacements.every(
-		(replacement) => replacement.approved !== undefined
-	);
+$: allReplacementsProcessed = potentialReplacements.every(
+  (replacement) => replacement.approved !== undefined
+);
 
 async function processComposerCode(isInitialRequest: boolean = true): Promise<void> {
-	isDataLoading = true;
-	error = null;
-	progress.set(0);
+  isDataLoading = true;
+  error = null;
+  progress.set(0);
 
-	const startTime = Date.now();
-	let progressValue = 0;
+  const startTime = Date.now();
+  let progressValue = 0;
 
-	const progressInterval = setInterval(() => {
-		if (progressValue < 60) {
-			progressValue = Math.min((Date.now() - startTime) / 100, 30);
-		} else {
-			progressValue = Math.min(progressValue + 0.2, 99);
-		}
-		progress.set(progressValue);
-	}, 100);
+  const progressInterval = setInterval(() => {
+    if (progressValue < 60) {
+      progressValue = Math.min((Date.now() - startTime) / 100, 70);
+    } else {
+      progressValue = Math.min(progressValue + 0.2, 99);
+    }
+    progress.set(progressValue);
+  }, 100);
 
-	try {
-		const response = await fetch('/api/process-composer-code', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				date,
-				allowK1,
-				inputtedComposerCode,
-				shouldReplaceStocks,
-				replacementTicker,
-				manualApprove,
-				replaceConditions,
-				isInitialRequest,
-				selectedReplacements: isInitialRequest ? [] : selectedReplacements
-			})
-		});
-		if (!response.ok) {
-			throw new Error('Error processing composer code');
-		}
-		const result = await response.json();
+  try {
+    console.log('Sending request with:', { manualApprove, isInitialRequest });
+    const response = await fetch('/api/process-composer-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        date,
+        allowK1,
+        inputtedComposerCode,
+        shouldReplaceStocks,
+        replacementTicker,
+        replaceConditions,
+        manualApprove,
+        isInitialRequest,
+        selectedReplacements: isInitialRequest ? [] : selectedReplacements
+      })
+    });
+    if (!response.ok) {
+      throw new Error('Error processing composer code');
+    }
+    const result = await response.json();
+    console.log('Received result:', result);
 
-		if (isInitialRequest && manualApprove) {
-			potentialReplacements = result.potentialReplacements || [];
-			data = null;
-		} else {
-			data = result;
-			potentialReplacements = [];
-			copied = false;
-		}
+    if (isInitialRequest && manualApprove) {
+      potentialReplacements = result.potentialReplacements || [];
+      console.log('Set potential replacements:', potentialReplacements);
+      data = null;
+    } else {
+      data = result;
+      potentialReplacements = [];
+      copied = false;
+    }
 
-		logger.info(isInitialRequest ? 'Potential replacements fetched successfully' : 'New composer code fetched successfully');
-	} catch (err) {
-		error = err instanceof Error ? err.message : 'An unknown error occurred';
-		logger.error('Error processing composer code', { error });
-	} finally {
-		clearInterval(progressInterval);
-		const finalizeProgress = setInterval(() => {
-			progressValue = Math.min(progressValue + 1, 100);
-			progress.set(progressValue);
-			if (progressValue === 100) {
-				clearInterval(finalizeProgress);
-				isDataLoading = false;
-				setTimeout(() => progress.set(0), 1000);
-			}
-		}, 20);
-	}
+    if (potentialReplacements.length === 0 && data === null) {
+      error = 'No replacements found for the given tickers.';
+    }
+
+    logger.info(isInitialRequest ? 'Potential replacements fetched successfully' : 'New composer code fetched successfully');
+  } catch (err) {
+    error = err instanceof Error ? err.message : 'An unknown error occurred';
+    logger.error('Error processing composer code', { error });
+  } finally {
+    clearInterval(progressInterval);
+    const finalizeProgress = setInterval(() => {
+      progressValue = Math.min(progressValue + 1, 100);
+      progress.set(progressValue);
+      if (progressValue === 100) {
+        clearInterval(finalizeProgress);
+        isDataLoading = false;
+        setTimeout(() => progress.set(0), 1000);
+      }
+    }, 20);
+  }
 }
 
 async function handleSubmit(): Promise<void> {
@@ -112,33 +119,34 @@ async function fetchNewComposerCode(): Promise<void> {
   await processComposerCode(false);
 }
 
-	function copyToClipboard(): void {
-		if (data === null) return;
-		navigator.clipboard
-			.writeText(data.NEW_COMPOSER_CODE)
-			.then(() => {
-				copied = true;
-				logger.info('New composer code copied to clipboard');
-			})
-			.catch((err) => {
-				logger.error('Failed to copy composer code', { error: err });
-			});
-	}
+function copyToClipboard(): void {
+  if (data === null) return;
+  navigator.clipboard
+    .writeText(data.NEW_COMPOSER_CODE)
+    .then(() => {
+      copied = true;
+      logger.info('New composer code copied to clipboard');
+    })
+    .catch((err) => {
+      logger.error('Failed to copy composer code', { error: err });
+    });
+}
 
-	function handleReplacement(approve: boolean, replacement: ReplacedTicker): void {
-		replacement.approved = approve;
-		replacement.denied = !approve;
 
-		potentialReplacements = potentialReplacements.map((r) => (r === replacement ? replacement : r));
+function handleReplacement(approve: boolean, replacement: ReplacedTicker): void {
+  replacement.approved = approve;
+  replacement.denied = !approve;
 
-		selectedReplacements = selectedReplacements.filter((r) => r !== replacement);
-		if (approve) {
-			selectedReplacements = [...selectedReplacements, replacement];
-		}
-		logger.info(`Replacement ${approve ? 'approved' : 'denied'}`, {
-			ticker: replacement.originalTicker
-		});
-	}
+  potentialReplacements = potentialReplacements.map((r) => (r === replacement ? replacement : r));
+
+  selectedReplacements = selectedReplacements.filter((r) => r.originalTicker !== replacement.originalTicker);
+  if (approve) {
+    selectedReplacements = [...selectedReplacements, replacement];
+  }
+  logger.info(`Replacement ${approve ? 'approved' : 'denied'}`, {
+    ticker: replacement.originalTicker
+  });
+}
 </script>
 
 <div class="bg-base-100 flex min-h-screen flex-col">
@@ -263,7 +271,7 @@ async function fetchNewComposerCode(): Promise<void> {
 			<div class="mt-8 w-full max-w-4xl">
 				<h2 class="mb-4 text-xl font-bold">Potential Replacements</h2>
 				<div class="space-y-6">
-					{#each potentialReplacements as replacement, index}
+					{#each potentialReplacements as replacement}
 						<div class="card bg-base-200 shadow-xl">
 							<div class="card-body">
 								<div class="mb-4 flex items-center justify-between">
