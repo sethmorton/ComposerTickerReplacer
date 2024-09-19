@@ -1,6 +1,6 @@
 <script lang="ts">
 import { Jumper } from 'svelte-loading-spinners';
-import GuidingScreenshot from '$lib/images/guiding_screenshot.png';
+import { onMount } from 'svelte';
 import type { ReplacedTicker, ComposerData } from '$lib/types';
 import { logger } from '$lib/logger';
 import { tweened } from 'svelte/motion';
@@ -147,6 +147,14 @@ function handleReplacement(approve: boolean, replacement: ReplacedTicker): void 
     ticker: replacement.originalTicker
   });
 }
+
+let videoElement: HTMLIFrameElement;
+
+onMount(() => {
+  if (videoElement) {
+    videoElement.src = 'https://www.youtube.com/embed/T6iARrOE6x0';
+  }
+});
 </script>
 
 <div class="bg-base-100 flex min-h-screen flex-col">
@@ -223,15 +231,22 @@ function handleReplacement(approve: boolean, replacement: ReplacedTicker): void 
 		</div>
 
 		<div class="mb-6 w-full max-w-md">
-			<div class="mb-4 flex items-center">
-				<label for="composerCode" class="label-text mr-4">Insert Composer Code:</label>
-				<img
-					src={GuidingScreenshot}
-					width="200"
-					height="100"
-					alt="guiding composer code"
-					class="rounded-lg"
-				/>
+			<div class="mb-4">
+				<label for="composerCode" class="label-text mr-4 font-semibold">Insert Composer Code:</label>
+			</div>
+			<div class="mb-4 flex justify-center">
+				<div class="relative w-[400px] h-[225px]">
+					<iframe
+						bind:this={videoElement}
+						width="400"
+						height="225"
+						title="Guiding video for composer code"
+						frameborder="0"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+						allowfullscreen
+						class="rounded-lg"
+					></iframe>
+				</div>
 			</div>
 			<textarea
 				id="composerCode"
