@@ -37,6 +37,7 @@
 	"dependencies": {
 		"adze": "^2.0.12",
 		"chowdown": "^1.2.6",
+		"lru-cache": "^11.2.2",
 		"posthog-js": "^1.162.0",
 		"svelte-loading-spinners": "^0.3.6"
 	}
