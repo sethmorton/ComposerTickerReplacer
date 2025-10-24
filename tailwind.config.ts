@@ -4,9 +4,10 @@ import daisyui from 'daisyui';
 export default {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 
-	theme: {
-		extend: {}
-	},
+	theme: { extend: {} },
 
-	plugins: [typography, daisyui]
+	plugins: [typography, daisyui],
+
+	// daisyUI configuration
+	daisyui: { themes: ['bumblebee', 'light', 'dark'] }
 } as Config;

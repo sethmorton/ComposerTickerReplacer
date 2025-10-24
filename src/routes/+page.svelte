@@ -5,6 +5,8 @@ import type { ReplacedTicker, ComposerData } from '$lib/types';
 import { logger } from '$lib/logger';
 import { tweened } from 'svelte/motion';
 import { cubicOut } from 'svelte/easing';
+import TooltipLabel from '$lib/components/TooltipLabel.svelte';
+import AppButton from '$lib/components/AppButton.svelte';
 
 let progress = tweened(0, {
   duration: 1000,
@@ -110,6 +112,7 @@ async function handleSubmit(): Promise<void> {
     logger.warn('Submission attempted without composer code');
     return;
   }
+
   await processComposerCode(true);
 }
 
@@ -159,43 +162,23 @@ onMount(() => {
 	<main class="flex flex-grow flex-col items-center justify-center p-8">
 		<h1 class="mb-8 text-4xl font-bold">Composer Backtest Extender</h1>
 
-		<div class="card bg-base-200 mb-8 w-full max-w-md shadow-xl">
+		<div class="card bg-base-100 border border-base-200 mb-8 w-full max-w-md shadow-xl">
 			<div class="card-body">
-				<div class="form-control mb-4">
-					<label class="label cursor-pointer">
-						<span class="label-text">Allow K1</span>
-						<input type="checkbox" bind:checked={allowK1} class="checkbox checkbox-primary" />
-					</label>
-				</div>
+				<TooltipLabel id="allow-k1" bind:checked={allowK1} tooltip="Allow funds issuing K-1 tax forms" className="mb-4">
+					<svelte:fragment slot="label">Allow K1</svelte:fragment>
+				</TooltipLabel>
 
-				<div class="form-control mb-4">
-					<label class="label cursor-pointer">
-						<span class="label-text">Replace individual stocks</span>
-						<input
-							type="checkbox"
-							bind:checked={shouldReplaceStocks}
-							class="checkbox checkbox-primary"
-						/>
-					</label>
-				</div>
+				<TooltipLabel id="replace-stocks" bind:checked={shouldReplaceStocks} tooltip="Swap individual stocks to ETFs or alternates" placement="right" className="mb-4">
+					<svelte:fragment slot="label">Replace individual stocks</svelte:fragment>
+				</TooltipLabel>
 
-				<div class="form-control mb-4">
-					<label class="label cursor-pointer">
-						<span class="label-text">Manually Approve Replacements</span>
-						<input type="checkbox" bind:checked={manualApprove} class="checkbox checkbox-primary" />
-					</label>
-				</div>
+				<TooltipLabel id="manual-approve" bind:checked={manualApprove} tooltip="Review and approve each proposed replacement" placement="left" className="mb-4">
+					<svelte:fragment slot="label">Manually Approve Replacements</svelte:fragment>
+				</TooltipLabel>
 
-				<div class="form-control mb-4">
-					<label class="label cursor-pointer">
-						<span class="label-text">Replace Conditionals</span>
-						<input
-							type="checkbox"
-							bind:checked={replaceConditions}
-							class="checkbox checkbox-primary"
-						/>
-					</label>
-				</div>
+				<TooltipLabel id="replace-conditions" bind:checked={replaceConditions} tooltip="Replace conditional logic blocks when needed" placement="bottom" className="mb-4">
+					<svelte:fragment slot="label">Replace Conditionals</svelte:fragment>
+				</TooltipLabel>
 
 				{#if shouldReplaceStocks}
 					<div class="form-control mb-4">
@@ -256,36 +239,34 @@ onMount(() => {
 		</div>
 
 		<div class="mb-8 flex items-center gap-4">
-			<button class="btn btn-primary text-lg text-white" on:click={handleSubmit}>
-			  {#if manualApprove}
-				Fetch Potential Replacements
-			  {:else}
-				Fetch New Composer Code
-			  {/if}
-			</button>
-		  
-			{#if isDataLoading || (data === null && $progress > 0)}
-			  <div class="w-64 h-2 bg-gray-200 rounded-full overflow-hidden">
-				<div class="h-full bg-blue-500 transition-all duration-300 ease-out" style="width: {$progress}%"></div>
-			  </div>
-			{/if}
-		  
-			{#if data !== null}
-			  <button class="btn bg-green-400 text-white hover:bg-green-500" on:click={copyToClipboard}>
-				{#if copied}
-				  Copied!
+			<button class="btn btn-primary btn-lg" on:click={() => handleSubmit()}>
+				{#if manualApprove}
+					Fetch Potential Replacements
 				{:else}
-				  Copy New Composer Code
+					Fetch New Composer Code
 				{/if}
-			  </button>
+			</button>
+
+			{#if isDataLoading || (data === null && $progress > 0)}
+				<progress class="progress progress-primary w-64" value={$progress} max="100" aria-label="Loading"></progress>
 			{/if}
-		  </div>
+
+			{#if data !== null}
+				<button class="btn btn-secondary btn-lg" on:click={copyToClipboard}>
+					{#if copied}
+						Copied!
+					{:else}
+						Copy New Composer Code
+					{/if}
+				</button>
+			{/if}
+		</div>
 		{#if potentialReplacements.length > 0}
 			<div class="mt-8 w-full max-w-4xl">
 				<h2 class="mb-4 text-xl font-bold">Potential Replacements</h2>
 				<div class="space-y-6">
 					{#each potentialReplacements as replacement}
-						<div class="card bg-base-200 shadow-xl">
+						<div class="card bg-base-100 border border-base-200 shadow-xl">
 							<div class="card-body">
 								<div class="mb-4 flex items-center justify-between">
 									<div>
@@ -326,7 +307,7 @@ onMount(() => {
 								{/if}
 								<div class="card-actions justify-end">
 									<button
-										class="btn btn-sm"
+										class="btn btn-sm btn-primary"
 										class:btn-primary={!replacement.approved}
 										class:btn-success={replacement.approved}
 										on:click={() => handleReplacement(true, replacement)}
@@ -339,7 +320,7 @@ onMount(() => {
 										{/if}
 									</button>
 									<button
-										class="btn btn-sm"
+										class="btn btn-sm btn-error"
 										class:btn-ghost={!replacement.denied}
 										class:btn-error={replacement.denied}
 										on:click={() => handleReplacement(false, replacement)}
@@ -357,8 +338,7 @@ onMount(() => {
 					{/each}
 				</div>
 				{#if data === null}
-					<button
-						class="btn btn-primary mt-4"
+					<button class="btn btn-primary btn-lg mt-4"
 						on:click={fetchNewComposerCode}
 						disabled={!allReplacementsProcessed || isDataLoading}
 					>
@@ -366,10 +346,7 @@ onMount(() => {
 					</button>
 				{/if}
 				{#if data !== null}
-					<button
-						class="btn mt-6 bg-green-400 text-white hover:bg-green-500"
-						on:click={copyToClipboard}
-					>
+					<button class="btn btn-secondary btn-lg" on:click={copyToClipboard}>
 						{#if copied}
 							Copied!
 						{:else}
@@ -383,7 +360,7 @@ onMount(() => {
 		{#if data !== null}
 			<div class="mt-8 grid w-full max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
 				<!-- Column 1 -->
-				<div class="card bg-base-200 shadow-xl">
+				<div class="card bg-base-100 border border-base-200 shadow-xl">
 					<div class="card-body">
 						<h2 class="card-title">
 							Individual Stocks
@@ -394,8 +371,10 @@ onMount(() => {
 						<div class="space-y-4">
 							{#each data.REPLACED_TICKERS as ticker}
 								{#if ticker.correlation === null}
-									<div class="bg-base-300 rounded-lg p-4">
-										<p class="text-md font-semibold">{ticker.originalTicker}</p>
+									<div class="card bg-base-100 border border-base-200">
+										<div class="card-body p-4">
+											<p class="text-md font-semibold">{ticker.originalTicker}</p>
+										</div>
 									</div>
 								{/if}
 							{/each}
@@ -404,13 +383,14 @@ onMount(() => {
 				</div>
 
 				<!-- Column 2 -->
-				<div class="card bg-base-200 shadow-xl">
+				<div class="card bg-base-100 border border-base-200 shadow-xl">
 					<div class="card-body">
 						<h2 class="card-title">Replaced Ticker and Correlation</h2>
 						<div class="space-y-4">
 							{#each data.REPLACED_TICKERS as ticker}
-								{#if ticker.correlation !== null}
-									<div class="bg-base-300 rounded-lg p-4">
+							{#if ticker.correlation !== null}
+								<div class="card bg-base-100 border border-base-200">
+									<div class="card-body p-4">
 										<div class="mb-2 flex items-center justify-between">
 											<p class="text-md font-semibold">
 												Original Ticker: {ticker.originalTicker}
@@ -421,9 +401,11 @@ onMount(() => {
 										</div>
 										<p>Correlation (1Y): {ticker.correlation}</p>
 									</div>
+								</div>
 								{/if}
-								{#if ticker.correlation === undefined && ticker.replacementTicker !== replacementTicker}
-									<div class="bg-base-300 rounded-lg p-4">
+							{#if ticker.correlation === undefined && ticker.replacementTicker !== replacementTicker}
+								<div class="card bg-base-100 border border-base-200">
+									<div class="card-body p-4">
 										<div class="mb-2 flex items-center justify-between">
 											<p class="text-md font-semibold">
 												Original Ticker: {ticker.originalTicker}
@@ -434,6 +416,7 @@ onMount(() => {
 										</div>
 										<p>Correlation (1Y): {ticker.correlation}</p>
 									</div>
+								</div>
 								{/if}
 							{/each}
 						</div>
@@ -464,7 +447,7 @@ onMount(() => {
 				href="https://tally.so/r/3NYOLj"
 				target="_blank"
 				rel="noopener noreferrer"
-				class="btn btn-lg bg-black text-white hover:bg-gray-800"
+				class="btn btn-lg btn-neutral"
 			>
 				<i class="fas fa-comment-alt mr-2"></i> Give Feedback
 			</a>
