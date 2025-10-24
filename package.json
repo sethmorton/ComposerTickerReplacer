@@ -35,6 +35,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@sveltejs/adapter-vercel": "^6.0.0",
 		"adze": "^2.2.5",
 		"chowdown": "^1.2.6",
 		"lru-cache": "^11.2.2",
