@@ -1,55 +1,67 @@
 <script lang="ts">
-  export let id: string;
-  export let checked: boolean | undefined = undefined;
-  export let tooltip: string;
-  export let placement: 'top' | 'right' | 'bottom' | 'left' = 'top';
-  export let className: string = '';
-  export let disabled: boolean = false;
+	export let id: string;
+	export let checked: boolean | undefined = undefined;
+	export let tooltip: string;
+	export let disabled: boolean = false;
 
-  // generate placement class
-  $: placementClass = placement === 'top'
-    ? 'tooltip-top'
-    : placement === 'right'
-    ? 'tooltip-right'
-    : placement === 'bottom'
-    ? 'tooltip-bottom'
-    : 'tooltip-left';
-  
-  // accessible id for tooltip content
-  $: tooltipId = `${id}-tip`;
+	$: tooltipId = `${id}-tip`;
 </script>
 
-<div class={`form-control ${className}`}>
-  <label class="label cursor-pointer gap-3">
-    <span class="label-text">
-      <slot name="label"></slot>
-    </span>
-    <span class={`tooltip ${placementClass}`} data-tip={tooltip}>
-      <input
-        id={id}
-        type="checkbox"
-        class="checkbox checkbox-primary"
-        disabled={disabled}
-        aria-describedby={tooltipId}
-        bind:checked={checked}
-      />
-    </span>
-  </label>
-  <span id={tooltipId} class="sr-only">{tooltip}</span>
+<div class="form-control">
+	<label class="option-label" for={id}>
+		<span class="label-text">
+			<span id={`${id}-label`}><slot name="label"></slot></span>
+			<span id={tooltipId} class="option-description">{tooltip}</span>
+		</span>
+		<input
+			{id}
+			type="checkbox"
+			class="checkbox-primary checkbox"
+			{disabled}
+			aria-describedby={tooltipId}
+			aria-labelledby={`${id}-label`}
+			bind:checked
+		/>
+	</label>
 </div>
 
 <style>
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
+	.form-control {
+		padding: 12px 0;
+		border-top: 1px solid var(--line);
+	}
+	.option-label {
+		display: flex;
+		justify-content: space-between;
+		gap: 16px;
+		cursor: pointer;
+		align-items: flex-start;
+	}
+	.label-text {
+		color: var(--ink);
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 1.5;
+	}
+	.option-description {
+		display: block;
+		margin-top: 4px;
+		color: var(--muted);
+		font-size: 12px;
+		font-weight: 400;
+		line-height: 1.6;
+	}
+	.checkbox {
+		appearance: auto;
+		flex-shrink: 0;
+		accent-color: var(--yellow);
+		width: 18px;
+		height: 18px;
+		border-radius: 4px;
+		margin-top: 2px;
+	}
+	.checkbox:focus-visible {
+		outline: 3px solid var(--focus);
+		outline-offset: 3px;
+	}
 </style>
-
-
